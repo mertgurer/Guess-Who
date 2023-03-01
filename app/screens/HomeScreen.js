@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import backImage from "../assets/gradient.png";
 
@@ -28,14 +29,14 @@ export function HomeScreen({ navigation }) {
               console.log("Start Pressed");
             }}
           >
-            <Text style={styles.buttonText}>Play</Text>
+            <MaterialCommunityIcons name="play-circle" size={60} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
             activeOpacity={0.7}
             onPress={() => navigation.push("CardCategories")}
           >
-            <Text style={styles.buttonText}>Cards</Text>
+            <MaterialCommunityIcons name="cards" size={60} color="#fff" />
           </TouchableOpacity>
         </View>
         <View style={styles.buttonZone}>
