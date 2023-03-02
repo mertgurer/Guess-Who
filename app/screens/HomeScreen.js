@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={0.8}
-            onPress={() => console.log("start pressed")}
+            onPress={() => navigation.push("Start")}
           >
             <Octicons name="play" size={55} color={colors.white} />
           </TouchableOpacity>
@@ -53,7 +53,7 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity
           style={[styles.button, styles.buttonSettings]}
           activeOpacity={0.8}
-          onPress={() => console.log("settings pressed")}
+          onPress={() => navigation.push("Settings")}
         >
           <Octicons name="gear" size={50} color={colors.white} />
         </TouchableOpacity>
