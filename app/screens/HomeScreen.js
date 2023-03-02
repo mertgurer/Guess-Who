@@ -4,22 +4,23 @@ import {
   Text,
   ImageBackground,
   View,
+  TouchableOpacity,
   Dimensions,
-  Pressable,
 } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 
+import { colors } from "../assets/colors";
 import backImage from "../assets/backImage.gif";
 
-const { width } = Dimensions.get("window");
+const width = Dimensions.get("window").width;
 
 export function HomeScreen({ navigation }) {
   return (
     <ImageBackground
       style={styles.home}
-      source={backImage}
+      /* source={backImage} */
       resizeMode={"stretch"}
     >
       <View style={styles.logoArea}>
@@ -28,24 +29,34 @@ export function HomeScreen({ navigation }) {
       <View style={styles.buttonArea}>
         <View style={styles.buttonZone}>
           {/* === start button === */}
-          <Pressable onPress={() => console.log("start pressed")}>
-            <View style={styles.button}>
-              <Octicons name="play" size={55} color="#fff" />
-            </View>
-          </Pressable>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.8}
+            onPress={() => console.log("start pressed")}
+          >
+            <Octicons name="play" size={55} color={colors.white} />
+          </TouchableOpacity>
           {/* === cards button === */}
-          <Pressable onPress={() => navigation.push("CardCategories")}>
-            <View style={styles.button}>
-              <MaterialCommunityIcons name="cards" size={60} color="#fff" />
-            </View>
-          </Pressable>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.8}
+            onPress={() => navigation.push("CardCategories")}
+          >
+            <MaterialCommunityIcons
+              name="cards"
+              size={60}
+              color={colors.white}
+            />
+          </TouchableOpacity>
         </View>
         {/* === settings button === */}
-        <Pressable onPress={() => console.log("settings pressed")}>
-          <View style={[styles.button, styles.buttonSettings]}>
-            <Octicons name="gear" size={50} color="#fff" />
-          </View>
-        </Pressable>
+        <TouchableOpacity
+          style={[styles.button, styles.buttonSettings]}
+          activeOpacity={0.8}
+          onPress={() => console.log("settings pressed")}
+        >
+          <Octicons name="gear" size={50} color={colors.white} />
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -54,6 +65,7 @@ export function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   home: {
     flex: 1,
+    backgroundColor: colors.primary,
     alignItems: "center",
   },
   logoArea: {
@@ -62,29 +74,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    color: "#fff",
+    color: colors.white,
     fontSize: 40,
   },
   buttonArea: {
     flex: 5,
+    width: "60%",
     alignItems: "center",
   },
   buttonZone: {
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
   },
   button: {
-    width: 120,
+    width: "48%",
     aspectRatio: 1,
-    backgroundColor: "#913034aa",
+    backgroundColor: colors.tint,
     justifyContent: "center",
     alignItems: "center",
-    margin: 5,
     borderRadius: 15,
+    borderWidth: 1,
+    borderColor: colors.white,
   },
   buttonSettings: {
-    width: 250,
+    width: "100%",
     aspectRatio: 2.5,
+    marginTop: width * 0.024,
   },
 });
 
