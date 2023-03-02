@@ -16,7 +16,7 @@ import backImage from "../assets/backImage.gif";
 
 const width = Dimensions.get("window").width;
 
-export function HomeScreen({ navigation }) {
+const HomeScreen = ({ navigation }) => {
   return (
     <ImageBackground
       style={styles.home}
@@ -60,7 +60,7 @@ export function HomeScreen({ navigation }) {
       </View>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   home: {

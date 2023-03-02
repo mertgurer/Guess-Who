@@ -24,7 +24,7 @@ const Item = ({ item, navigation }) => (
   </Pressable>
 );
 
-export function CardCategoriesScreen({ navigation }) {
+const CardCategoriesScreen = ({ navigation }) => {
   const { categoryData, setCategoryData } = useContext(DataContext);
 
   const fetchCategoriesData = async () => {
@@ -73,7 +73,7 @@ export function CardCategoriesScreen({ navigation }) {
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   cardCategories: {

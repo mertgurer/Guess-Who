@@ -9,7 +9,7 @@ const Item = ({ card }) => (
   </View>
 );
 
-export function CardScreen({ route }) {
+const CardScreen = ({ route }) => {
   const { cards } = route.params;
 
   return (
@@ -23,7 +23,7 @@ export function CardScreen({ route }) {
       keyExtractor={(index) => index.toString()}
     />
   );
-}
+};
 
 const styles = StyleSheet.create({
   cards: {

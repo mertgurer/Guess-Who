@@ -4,9 +4,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { colors } from "./app/assets/colors";
 import { DataContext } from "./DataContext";
-import { CardCategoriesScreen } from "./app/screens/CardCategoriesScreen";
-import { CardScreen } from "./app/screens/CardScreen";
-import { HomeScreen } from "./app/screens/HomeScreen";
+import CardCategoriesScreen from "./app/screens/CardCategoriesScreen";
+import CardScreen from "./app/screens/CardScreen";
+import HomeScreen from "./app/screens/HomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +19,6 @@ export default function App() {
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{
-            title: "Card Categories",
             headerTintColor: colors.black,
             headerStyle: { backgroundColor: colors.primary },
           }}
