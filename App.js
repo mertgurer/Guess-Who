@@ -22,6 +22,8 @@ export default function App() {
       const value = await AsyncStorage.getItem("username");
       if (value !== null) {
         setUsername(value);
+      } else {
+        setUsername(`afacan${Math.floor(Math.random() * (100 - 1) + 1)}`);
       }
     } catch (e) {
       console.log(e);
