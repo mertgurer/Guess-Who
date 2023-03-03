@@ -20,14 +20,17 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const navigationRef = useRef(null);
   const [username, setUsername] = useState();
-  const [categoryData, setCategoryData] = useState();
   const [customCardsArray, setCustomCardsArray] = useState();
+  const [categoryData, setCategoryData] = useState();
 
-  const retriveUsername = async () => {
+  const retriveUserRelatedData = async () => {
     try {
-      const value = await AsyncStorage.getItem("username");
-      if (value !== null) {
-        setUsername(value);
+      const usernameValue = await AsyncStorage.getItem("username");
+      const customCardsValue = await AsyncStorage.getItem("customCards");
+
+      // get user name data
+      if (usernameValue !== null) {
+        setUsername(usernameValue);
       } else {
         const newUserUsername = `afacan${Math.floor(
           Math.random() * (100 - 1) + 1
@@ -40,13 +43,18 @@ export default function App() {
           console.log(e);
         }
       }
+
+      // get custom cards data
+      if (customCardsValue !== null) {
+        setCustomCardsArray(JSON.parse(customCardsValue));
+      }
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    retriveUsername();
+    retriveUserRelatedData();
   }, []);
 
   return (

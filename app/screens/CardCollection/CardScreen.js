@@ -10,7 +10,9 @@ const Item = ({ card }) => (
 );
 
 const CardScreen = ({ route }) => {
-  const { cards } = route.params;
+  const { cards, id } = route.params;
+
+  console.log(id);
 
   return (
     <FlatList

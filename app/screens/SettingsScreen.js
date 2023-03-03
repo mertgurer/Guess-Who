@@ -15,7 +15,8 @@ import DataContext from "../../DataContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const SettingsScreen = () => {
-  const { username, setUsername } = useContext(DataContext);
+  const { username, setUsername, setCustomCardsArray } =
+    useContext(DataContext);
   const [input, setInput] = useState(username);
 
   const submitUsername = async () => {
@@ -59,6 +60,14 @@ const SettingsScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <TouchableOpacity
+        onPress={() => {
+          saveCardState();
+          setCustomCardsArray(undefined);
+        }}
+      >
+        <Text>Delete all custom card sets</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -95,6 +104,14 @@ const styles = StyleSheet.create({
 });
 
 export default SettingsScreen;
+
+const saveCardState = async () => {
+  try {
+    await AsyncStorage.removeItem("customCards");
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 const successAlert = ({ newUsername }) => {
   Alert.alert("Change Successful", `New username is set to ${newUsername}`, [

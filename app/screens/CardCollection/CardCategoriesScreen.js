@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -11,11 +11,16 @@ import {
 import { colors } from "../../assets/colors";
 import { DataContext } from "../../../DataContext";
 import { getCategoriesData } from "../../../firebase";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Item = ({ item, navigation }) => (
   <Pressable
     onPress={() => {
-      navigation.push("Cards", { title: item.title, cards: item.cards });
+      navigation.push("Cards", {
+        title: item.title,
+        cards: item.cards,
+        id: item.id,
+      });
     }}
   >
     <View style={styles.categoryBox}>
@@ -25,15 +30,29 @@ const Item = ({ item, navigation }) => (
 );
 
 const CardCategoriesScreen = ({ navigation }) => {
-  const { categoryData, setCategoryData } = useContext(DataContext);
+  const { categoryData, setCategoryData, customCardsArray } =
+    useContext(DataContext);
+
+  const [isFocused, setIsFocused] = useState(false);
 
   const fetchCategoriesData = async () => {
-    setCategoryData(await getCategoriesData());
+    if (customCardsArray) {
+      setCategoryData([...(await getCategoriesData()), ...customCardsArray]);
+    } else {
+      setCategoryData(await getCategoriesData());
+    }
   };
 
   useEffect(() => {
     fetchCategoriesData();
-  }, []);
+  }, [isFocused]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
 
   return (
     <View

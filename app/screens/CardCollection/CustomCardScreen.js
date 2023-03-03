@@ -12,6 +12,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { async } from "@firebase/util";
 
 const CustomCardScreen = ({ navigation }) => {
   const { customCardsArray, setCustomCardsArray } = useContext(DataContext);
@@ -37,9 +39,15 @@ const CustomCardScreen = ({ navigation }) => {
     const filteredTitle = customCards.title.trim();
 
     // save them in a temp card set
+    let id = 100;
+    if (customCardsArray) {
+      id += customCardsArray.length;
+    }
+
     const tempCardSet = {
       title: filteredTitle,
       cards: filteredCrads,
+      id: id,
     };
 
     // validate new card set
@@ -60,14 +68,18 @@ const CustomCardScreen = ({ navigation }) => {
         }
         // if fisrts set title is unique add it to the array
         if (uniqueFlag) {
-          setCustomCardsArray([...customCardsArray, tempCardSet]);
           successAlert({ title: tempCardSet.title, navigation: navigation });
+          setCustomCardsArray([...customCardsArray, tempCardSet]);
+          saveCardState({
+            customCardsArray: [...customCardsArray, tempCardSet],
+          });
         }
       }
       // if there is no other card sets add this one
       else {
-        setCustomCardsArray([tempCardSet]);
         successAlert({ title: tempCardSet.title, navigation: navigation });
+        setCustomCardsArray([tempCardSet]);
+        saveCardState({ customCardsArray: [tempCardSet] });
       }
     }
     // if field values are not validated
@@ -235,6 +247,15 @@ const styles = StyleSheet.create({
 });
 
 export default CustomCardScreen;
+
+const saveCardState = async ({ customCardsArray }) => {
+  try {
+    const jsonValue = JSON.stringify(customCardsArray);
+    await AsyncStorage.setItem("customCards", jsonValue);
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 const successAlert = ({ title, navigation }) => {
   Alert.alert(
