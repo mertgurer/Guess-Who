@@ -8,9 +8,9 @@ import {
   RefreshControl,
 } from "react-native";
 
-import { colors } from "../assets/colors";
-import { DataContext } from "../../DataContext";
-import { getCategoriesData } from "../../firebase";
+import { colors } from "../../assets/colors";
+import { DataContext } from "../../../DataContext";
+import { getCategoriesData } from "../../../firebase";
 
 const Item = ({ item, navigation }) => (
   <Pressable
@@ -51,6 +51,8 @@ const CardCategoriesScreen = ({ navigation }) => {
             backgroundColor: colors.black,
             color: colors.white,
             padding: 20,
+            borderWidth: 1,
+            borderColor: colors.white,
           }}
         >
           Loading...
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   categoryBox: {
-    backgroundColor: colors.tint,
+    backgroundColor: colors.secondary,
     width: 170,
     aspectRatio: 1,
     justifyContent: "center",

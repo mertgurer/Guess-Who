@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, FlatList, View, Text } from "react-native";
 
-import { colors } from "../assets/colors";
+import { colors } from "../../assets/colors";
 
 const Item = ({ card }) => (
   <View style={styles.cardBox}>
@@ -27,10 +27,11 @@ const CardScreen = ({ route }) => {
 
 const styles = StyleSheet.create({
   cards: {
+    flex: 1,
     backgroundColor: colors.primary,
   },
   cardBox: {
-    backgroundColor: colors.tint,
+    backgroundColor: colors.secondary,
     width: 170,
     aspectRatio: 1,
     justifyContent: "center",

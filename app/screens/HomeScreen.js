@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   button: {
     width: "48%",
     aspectRatio: 1,
-    backgroundColor: colors.tint,
+    backgroundColor: colors.secondary,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,

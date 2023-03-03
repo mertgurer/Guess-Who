@@ -12,28 +12,30 @@ import { colors } from "../assets/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import DataContext from "../../DataContext";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const SettingsScreen = () => {
   const { username, setUsername } = useContext(DataContext);
   const [input, setInput] = useState(username);
 
   const submitUsername = async () => {
-    try {
-      if (input !== username && input.length !== 0) {
-        setUsername(input);
-        await AsyncStorage.setItem("username", input);
+    filteredInput = input.trim();
 
-        Alert.alert("Change Successful", `New username is set to ${input}`, [
-          {
-            text: "OK",
-            onPress: () => Keyboard.dismiss(),
-          },
-        ]);
+    try {
+      if (filteredInput !== username && filteredInput.length !== 0) {
+        setUsername(filteredInput);
+        await AsyncStorage.setItem("username", filteredInput);
+        successAlert({ newUsername: filteredInput });
+      } else if (filteredInput === username) {
+        failAlert({ message: "Username is same as before" });
+      } else {
+        failAlert({ message: "Username can't be empty" });
       }
     } catch (e) {
       console.log(e);
     }
+
+    setInput(filteredInput);
   };
 
   return (
@@ -48,10 +50,10 @@ const SettingsScreen = () => {
             placeholder={"Enter Username..."}
           />
           <TouchableOpacity onPress={submitUsername}>
-            <MaterialCommunityIcons
+            <Ionicons
               style={styles.saveButton}
-              name="send"
-              size={40}
+              name="checkmark-sharp"
+              size={50}
               color={colors.black}
             />
           </TouchableOpacity>
@@ -86,10 +88,23 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: colors.third,
-    padding: 10,
+    padding: 5,
     borderWidth: 1,
     borderColor: colors.white,
   },
 });
 
 export default SettingsScreen;
+
+const successAlert = ({ newUsername }) => {
+  Alert.alert("Change Successful", `New username is set to ${newUsername}`, [
+    {
+      text: "OK",
+      onPress: () => Keyboard.dismiss(),
+    },
+  ]);
+};
+
+const failAlert = ({ message }) => {
+  Alert.alert("Change Failed", message);
+};
