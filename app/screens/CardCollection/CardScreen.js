@@ -13,6 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { strings } from "../../assets/languages";
 
 const Item = ({ card }) => (
   <View style={styles.cardBox}>
@@ -21,7 +22,8 @@ const Item = ({ card }) => (
 );
 
 const CardScreen = ({ route, navigation }) => {
-  const { customCardsArray, setCustomCardsArray } = useContext(DataContext);
+  const { customCardsArray, setCustomCardsArray, language } =
+    useContext(DataContext);
   const { title, cards, id } = route.params;
 
   useEffect(() => {
@@ -35,6 +37,7 @@ const CardScreen = ({ route, navigation }) => {
                 customCardsArray: customCardsArray,
                 setCustomCardsArray: setCustomCardsArray,
                 navigation: navigation,
+                language: language,
               })
             }
           >
@@ -94,17 +97,18 @@ const deleteAlert = ({
   customCardsArray,
   setCustomCardsArray,
   navigation,
+  language,
 }) => {
   Alert.alert(
-    `Delete ${title}`,
-    "Are you sure you want to delete this category?",
+    `${strings[language].delete} "${title}"`,
+    strings[language].deleteSet,
     [
       {
         text: "Cancel",
         style: "cancel",
       },
       {
-        text: "Delete",
+        text: strings[language].cancel,
         style: "destructive",
         onPress: async () => {
           const removedCustomCards = customCardsArray.filter(

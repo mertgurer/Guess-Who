@@ -21,6 +21,8 @@
   "cancel": "Cancel",
   "delete": "Delete",
 
+  "deleteSet": "Are you sure you want to delete this card set",
+
   "changeSuccessful": "Change Successful",
   "newUsernameInfo": "New username us set to",
   "changeFailed": "Change Failed",

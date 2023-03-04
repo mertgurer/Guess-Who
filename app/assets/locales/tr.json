@@ -21,6 +21,8 @@
   "cancel": "İptal",
   "delete": "Sil",
 
+  "deleteSet": "Bu kart setini silmek istediğine emin misin",
+
   "changeSuccessful": "Ad değiştirme başarılı",
   "newUsernameInfo": "Yeni kullanıcı adınız",
   "changeFailed": "Ad değiştirme tamamlanamadı",
