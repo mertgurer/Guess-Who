@@ -6,8 +6,11 @@ import {
   View,
   Alert,
   Keyboard,
+  ImageBackground,
 } from "react-native";
 import React, { useContext, useState } from "react";
+
+import backImage from "../assets/backImage.png";
 import { colors } from "../assets/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -40,7 +43,7 @@ const SettingsScreen = () => {
   };
 
   return (
-    <View style={styles.settings}>
+    <ImageBackground style={styles.settings} source={backImage}>
       <View>
         <Text style={styles.infoText}>Username</Text>
         <View style={styles.usernameZone}>
@@ -50,25 +53,24 @@ const SettingsScreen = () => {
             value={input}
             placeholder={"Enter Username..."}
           />
-          <TouchableOpacity onPress={submitUsername}>
-            <Ionicons
-              style={styles.saveButton}
-              name="checkmark-sharp"
-              size={50}
-              color={colors.black}
-            />
+          <TouchableOpacity onPress={submitUsername} activeOpacity={0.8}>
+            <View style={styles.saveButton}>
+              <Ionicons name="checkmark-sharp" size={50} color={colors.black} />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity
-        onPress={() => {
-          saveCardState();
-          setCustomCardsArray(undefined);
-        }}
+        onPress={() =>
+          deleteAlert({ setCustomCardsArray: setCustomCardsArray })
+        }
+        activeOpacity={0.8}
       >
-        <Text>Delete all custom card sets</Text>
+        <View style={styles.clearCustomCards}>
+          <Text style={{ fontWeight: "700" }}>Delete all custom card sets</Text>
+        </View>
       </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -79,27 +81,46 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   infoText: {
     fontSize: 20,
-    paddingBottom: 10,
-    paddingLeft: 5,
+    padding: 5,
+    color: colors.white,
   },
   usernameZone: {
     flexDirection: "row",
+    marginBottom: 30,
   },
   input: {
     backgroundColor: colors.secondary,
-    width: 200,
+    width: 220,
     padding: 10,
-    borderWidth: 1,
-    borderColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.black,
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
   },
   saveButton: {
+    width: 70,
+    height: 60,
     backgroundColor: colors.third,
-    padding: 5,
-    borderWidth: 1,
-    borderColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.black,
+    justifyContent: "center",
+    alignItems: "center",
+    borderLeftWidth: 0,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  clearCustomCards: {
+    marginVertical: 30,
+    width: 240,
+    height: 60,
+    backgroundColor: colors.third,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: colors.black,
+    borderRadius: 10,
   },
 });
 
@@ -124,4 +145,21 @@ const successAlert = ({ newUsername }) => {
 
 const failAlert = ({ message }) => {
   Alert.alert("Change Failed", message);
+};
+
+const deleteAlert = ({ setCustomCardsArray }) => {
+  Alert.alert("Are you sure you want to delete all custom card sets", "", [
+    {
+      text: "Delete",
+      style: "destructive",
+      onPress: () => {
+        saveCardState();
+        setCustomCardsArray(undefined);
+      },
+    },
+    {
+      text: "Cancel",
+      style: "cancel",
+    },
+  ]);
 };

@@ -5,19 +5,20 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useContext, useState } from "react";
 
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Foundation from "react-native-vector-icons/Foundation";
+import Fontisto from "react-native-vector-icons/Fontisto";
 
 import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { async } from "@firebase/util";
 
 const CustomCardScreen = ({ navigation }) => {
   const { customCardsArray, setCustomCardsArray } = useContext(DataContext);
-  const [cardCount, setCardCount] = useState(4);
+  const [cardCount, setCardCount] = useState(6);
   const [customCards, setCustomCards] = useState({
     title: "",
     cards: [],
@@ -105,59 +106,61 @@ const CustomCardScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{ alignItems: "center", paddingBottom: 120 }}
-      >
-        <TextInput
-          style={[styles.input, styles.titleInput]}
-          value={customCards.title}
-          onChangeText={(text) =>
-            setCustomCards({ ...customCards, title: text })
-          }
-          placeholder={"Title"}
-          placeholderTextColor={colors.halfBlack}
-        />
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={130}>
+        <ScrollView
+          contentContainerStyle={{ alignItems: "center", paddingBottom: 100 }}
+        >
+          <TextInput
+            style={[styles.input, styles.titleInput]}
+            value={customCards.title}
+            onChangeText={(text) =>
+              setCustomCards({ ...customCards, title: text })
+            }
+            placeholder={"Title"}
+            placeholderTextColor={colors.halfBlack}
+          />
 
-        <View style={styles.fieldsContainer}>
-          <View style={styles.fieldColumn}>
-            {(() => {
-              const elements = [];
-              for (let index = 0; index < cardCount; index += 2) {
-                elements.push(
-                  <TextInput
-                    key={index}
-                    style={styles.input}
-                    value={customCards.cards[index]}
-                    onChangeText={(text) => handleChangeText(text, index)}
-                    placeholder={"Name"}
-                    placeholderTextColor={colors.halfBlack}
-                  />
-                );
-              }
-              return elements;
-            })()}
-          </View>
+          <View style={styles.fieldsContainer}>
+            <View style={styles.fieldColumn}>
+              {(() => {
+                const elements = [];
+                for (let index = 0; index < cardCount; index += 2) {
+                  elements.push(
+                    <TextInput
+                      key={index}
+                      style={styles.input}
+                      value={customCards.cards[index]}
+                      onChangeText={(text) => handleChangeText(text, index)}
+                      placeholder={"Name"}
+                      placeholderTextColor={colors.halfBlack}
+                    />
+                  );
+                }
+                return elements;
+              })()}
+            </View>
 
-          <View style={styles.fieldColumn}>
-            {(() => {
-              const elements = [];
-              for (let index = 1; index < cardCount; index += 2) {
-                elements.push(
-                  <TextInput
-                    key={index}
-                    style={styles.input}
-                    value={customCards.cards[index]}
-                    onChangeText={(text) => handleChangeText(text, index)}
-                    placeholder={"Name"}
-                    placeholderTextColor={colors.halfBlack}
-                  />
-                );
-              }
-              return elements;
-            })()}
+            <View style={styles.fieldColumn}>
+              {(() => {
+                const elements = [];
+                for (let index = 1; index < cardCount; index += 2) {
+                  elements.push(
+                    <TextInput
+                      key={index}
+                      style={styles.input}
+                      value={customCards.cards[index]}
+                      onChangeText={(text) => handleChangeText(text, index)}
+                      placeholder={"Name"}
+                      placeholderTextColor={colors.halfBlack}
+                    />
+                  );
+                }
+                return elements;
+              })()}
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <View style={styles.buttonArea}>
         <TouchableOpacity
           style={[styles.button, styles.minuesButton]}
@@ -169,23 +172,27 @@ const CustomCardScreen = ({ navigation }) => {
               setCustomCards({ ...customCards, cards: cutCards });
             }
           }}
+          activeOpacity={0.8}
         >
-          <FontAwesome name="minus" size={40} color={colors.black} />
+          <Foundation name="minus" size={30} color={colors.black} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, styles.saveButton]}
+          style={styles.button}
           onPress={handleSubmit}
+          activeOpacity={0.8}
         >
-          <FontAwesome name="save" size={45} color={colors.black} />
+          <Fontisto name="save" size={37} color={colors.black} />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.plusButton]}
           onPress={() => {
-            console.log(customCardsArray);
-            setCardCount(cardCount + 1);
+            if (cardCount < 30) {
+              setCardCount(cardCount + 1);
+            }
           }}
+          activeOpacity={0.8}
         >
-          <FontAwesome name="plus" size={40} color={colors.black} />
+          <Foundation name="plus" size={35} color={colors.black} />
         </TouchableOpacity>
       </View>
     </View>
@@ -221,29 +228,31 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     fontSize: 17,
-    borderWidth: 1,
-    borderColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.black,
   },
   buttonArea: {
     position: "absolute",
     bottom: 40,
-    width: "100%",
+    width: "60%",
     flexDirection: "row",
     marginTop: 20,
+    marginHorizontal: "20%",
     justifyContent: "space-evenly",
   },
   button: {
     width: 100,
     height: 60,
-    borderWidth: 2,
+    borderWidth: 3,
     borderRadius: 10,
-    borderColor: colors.white,
+    borderColor: colors.black,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: colors.third,
   },
-  saveButton: { backgroundColor: colors.third },
-  minuesButton: { backgroundColor: colors.third },
-  plusButton: { backgroundColor: colors.third },
+
+  minuesButton: { width: 60 },
+  plusButton: { width: 60 },
 });
 
 export default CustomCardScreen;

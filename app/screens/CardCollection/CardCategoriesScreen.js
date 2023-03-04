@@ -6,8 +6,10 @@ import {
   Text,
   Pressable,
   RefreshControl,
+  ImageBackground,
 } from "react-native";
 
+import backImage from "../../assets/backImage.png";
 import { colors } from "../../assets/colors";
 import { DataContext } from "../../../DataContext";
 import { getCategoriesData } from "../../../firebase";
@@ -55,13 +57,15 @@ const CardCategoriesScreen = ({ navigation }) => {
   );
 
   return (
-    <View
+    <ImageBackground
       style={{
         flex: 1,
-        backgroundColor: colors.primary,
         justifyContent: "center",
+        backgroundColor: colors.primary,
         alignItems: categoryData === undefined ? "center" : "stretch",
       }}
+      source={backImage}
+      resizeMode={"stretch"}
     >
       {categoryData === undefined ? (
         <Text
@@ -92,14 +96,13 @@ const CardCategoriesScreen = ({ navigation }) => {
           }
         />
       )}
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   cardCategories: {
     flex: 1,
-    backgroundColor: colors.primary,
   },
   categoryBox: {
     backgroundColor: colors.secondary,
@@ -108,16 +111,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.white,
+    borderWidth: 3,
+    borderColor: colors.black,
     marginVertical: 10,
+    padding: 5,
 
     shadowColor: colors.black,
-    shadowOpacity: 0.7,
-    shadowRadius: 7,
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
     shadowOffset: { width: 0, height: 5 },
   },
-  categoryBoxContent: { color: colors.white },
+  categoryBoxContent: {
+    color: colors.black,
+    fontSize: 20,
+    textAlign: "center",
+  },
 });
 
 export default CardCategoriesScreen;

@@ -19,6 +19,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const navigationRef = useRef(null);
+  const [language, setLanguage] = useState("en");
   const [username, setUsername] = useState();
   const [customCardsArray, setCustomCardsArray] = useState();
   const [categoryData, setCategoryData] = useState();
@@ -72,8 +73,8 @@ export default function App() {
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{
-            headerTintColor: colors.black,
-            headerStyle: { backgroundColor: colors.primary },
+            headerTintColor: colors.white,
+            headerStyle: { backgroundColor: colors.tint },
           }}
         >
           <Stack.Screen
@@ -82,7 +83,7 @@ export default function App() {
             options={{ headerShown: false }}
           />
 
-          <Stack.Screen name="Start" component={StartScreen} />
+          <Stack.Screen name="Play" component={StartScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen
             name="CardCategories"
@@ -91,7 +92,7 @@ export default function App() {
               title: "Categories",
               headerRight: () => (
                 <TouchableOpacity onPress={() => navigation.push("CustomCard")}>
-                  <Octicons name="plus" size={30} color={colors.black} />
+                  <Octicons name="plus" size={30} color={colors.white} />
                 </TouchableOpacity>
               ),
             })}

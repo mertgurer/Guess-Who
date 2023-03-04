@@ -1,7 +1,18 @@
-import React from "react";
-import { StyleSheet, FlatList, View, Text } from "react-native";
+import React, { useContext, useEffect } from "react";
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { colors } from "../../assets/colors";
+import DataContext from "../../../DataContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Item = ({ card }) => (
   <View style={styles.cardBox}>
@@ -9,10 +20,30 @@ const Item = ({ card }) => (
   </View>
 );
 
-const CardScreen = ({ route }) => {
-  const { cards, id } = route.params;
+const CardScreen = ({ route, navigation }) => {
+  const { customCardsArray, setCustomCardsArray } = useContext(DataContext);
+  const { title, cards, id } = route.params;
 
-  console.log(id);
+  useEffect(() => {
+    if (id > 99) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() =>
+              deleteAlert({
+                title: title,
+                customCardsArray: customCardsArray,
+                setCustomCardsArray: setCustomCardsArray,
+                navigation: navigation,
+              })
+            }
+          >
+            <Ionicons name="trash-outline" size={30} color={colors.white} />
+          </TouchableOpacity>
+        ),
+      });
+    }
+  }, [id]);
 
   return (
     <FlatList
@@ -39,16 +70,57 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.white,
+    borderWidth: 3,
+    borderColor: colors.black,
     marginVertical: 10,
+    padding: 5,
 
     shadowColor: colors.black,
-    shadowOpacity: 0.7,
-    shadowRadius: 7,
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
     shadowOffset: { width: 0, height: 5 },
   },
-  cardBoxContent: { color: colors.white },
+  cardBoxContent: {
+    color: colors.black,
+    fontSize: 20,
+    textAlign: "center",
+  },
 });
 
 export default CardScreen;
+
+const deleteAlert = ({
+  title,
+  customCardsArray,
+  setCustomCardsArray,
+  navigation,
+}) => {
+  Alert.alert(
+    `Delete ${title}`,
+    "Are you sure you want to delete this category?",
+    [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          const removedCustomCards = customCardsArray.filter(
+            (category) => category.title !== title
+          );
+
+          try {
+            const jsonValue = JSON.stringify(removedCustomCards);
+            await AsyncStorage.setItem("customCards", jsonValue);
+            setCustomCardsArray(removedCustomCards);
+            navigation.goBack();
+          } catch (e) {
+            console.log(e);
+          }
+        },
+      },
+    ]
+  );
+};

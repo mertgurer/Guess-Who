@@ -6,13 +6,15 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 
 import { colors } from "../assets/colors";
-import backImage from "../assets/backImage.gif";
+import backImage from "../assets/backImage.png";
+import logo from "../assets/logo.png";
 
 const width = Dimensions.get("window").width;
 
@@ -20,11 +22,13 @@ const HomeScreen = ({ navigation }) => {
   return (
     <ImageBackground
       style={styles.home}
-      /* source={backImage} */
+      source={backImage}
       resizeMode={"stretch"}
     >
       <View style={styles.logoArea}>
-        <Text style={styles.logo}>Guess Who</Text>
+        <View style={styles.logo}>
+          <Image style={styles.logoImage} source={logo} resizeMode="contain" />
+        </View>
       </View>
       <View style={styles.buttonArea}>
         <View style={styles.buttonZone}>
@@ -32,9 +36,9 @@ const HomeScreen = ({ navigation }) => {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={0.8}
-            onPress={() => navigation.push("Start")}
+            onPress={() => navigation.push("Play")}
           >
-            <Octicons name="play" size={55} color={colors.white} />
+            <Octicons name="play" size={55} color={colors.black} />
           </TouchableOpacity>
           {/* === cards button === */}
           <TouchableOpacity
@@ -45,7 +49,7 @@ const HomeScreen = ({ navigation }) => {
             <MaterialCommunityIcons
               name="cards"
               size={60}
-              color={colors.white}
+              color={colors.black}
             />
           </TouchableOpacity>
         </View>
@@ -55,7 +59,7 @@ const HomeScreen = ({ navigation }) => {
           activeOpacity={0.8}
           onPress={() => navigation.push("Settings")}
         >
-          <Octicons name="gear" size={50} color={colors.white} />
+          <Octicons name="gear" size={50} color={colors.black} />
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -74,8 +78,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    color: colors.white,
-    fontSize: 40,
+    width: 300,
+    height: 110,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logoImage: {
+    flex: 1,
   },
   buttonArea: {
     flex: 5,
@@ -94,8 +103,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.white,
+    borderWidth: 3,
+    borderColor: colors.black,
+
+    shadowColor: colors.black,
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 5 },
   },
   buttonSettings: {
     width: "100%",
