@@ -15,9 +15,11 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { strings } from "../../assets/languages";
 
 const CustomCardScreen = ({ navigation }) => {
-  const { customCardsArray, setCustomCardsArray } = useContext(DataContext);
+  const { customCardsArray, setCustomCardsArray, language } =
+    useContext(DataContext);
   const [cardCount, setCardCount] = useState(6);
   const [customCards, setCustomCards] = useState({
     title: "",
@@ -60,8 +62,8 @@ const CustomCardScreen = ({ navigation }) => {
         for (let i = 0; i < customCardsArray.length; i++) {
           if (tempCardSet.title === customCardsArray[i].title) {
             failAlert({
-              header: "Save Failed",
-              message: `A card set with the name "${tempCardSet.title}" already exists`,
+              header: strings[language].saveFail,
+              message: `${strings[language].saveFailInfo1} "${tempCardSet.title}" ${strings[language].saveFailInfo2}`,
             });
             uniqueFlag = false;
             break;
@@ -69,7 +71,11 @@ const CustomCardScreen = ({ navigation }) => {
         }
         // if fisrts set title is unique add it to the array
         if (uniqueFlag) {
-          successAlert({ title: tempCardSet.title, navigation: navigation });
+          successAlert({
+            title: tempCardSet.title,
+            navigation: navigation,
+            language,
+          });
           setCustomCardsArray([...customCardsArray, tempCardSet]);
           saveCardState({
             customCardsArray: [...customCardsArray, tempCardSet],
@@ -78,7 +84,11 @@ const CustomCardScreen = ({ navigation }) => {
       }
       // if there is no other card sets add this one
       else {
-        successAlert({ title: tempCardSet.title, navigation: navigation });
+        successAlert({
+          title: tempCardSet.title,
+          navigation: navigation,
+          language,
+        });
         setCustomCardsArray([tempCardSet]);
         saveCardState({ customCardsArray: [tempCardSet] });
       }
@@ -86,13 +96,13 @@ const CustomCardScreen = ({ navigation }) => {
     // if field values are not validated
     else if (tempCardSet.title.length === 0) {
       failAlert({
-        header: "Can't Save",
-        message: `Title field can not be empty`,
+        header: strings[language].cantSave,
+        message: strings[language].cantSaveEmpty,
       });
     } else {
       failAlert({
-        header: "Can't Save",
-        message: `There must be at least 2 card fields`,
+        header: strings[language].cantSave,
+        message: strings[language].cantSaveLittle,
       });
     }
 
@@ -116,7 +126,7 @@ const CustomCardScreen = ({ navigation }) => {
             onChangeText={(text) =>
               setCustomCards({ ...customCards, title: text })
             }
-            placeholder={"Title"}
+            placeholder={strings[language].title}
             placeholderTextColor={colors.halfBlack}
           />
 
@@ -131,7 +141,7 @@ const CustomCardScreen = ({ navigation }) => {
                       style={styles.input}
                       value={customCards.cards[index]}
                       onChangeText={(text) => handleChangeText(text, index)}
-                      placeholder={"Name"}
+                      placeholder={strings[language].name}
                       placeholderTextColor={colors.halfBlack}
                     />
                   );
@@ -150,7 +160,7 @@ const CustomCardScreen = ({ navigation }) => {
                       style={styles.input}
                       value={customCards.cards[index]}
                       onChangeText={(text) => handleChangeText(text, index)}
-                      placeholder={"Name"}
+                      placeholder={strings[language].name}
                       placeholderTextColor={colors.halfBlack}
                     />
                   );
@@ -266,10 +276,10 @@ const saveCardState = async ({ customCardsArray }) => {
   }
 };
 
-const successAlert = ({ title, navigation }) => {
+const successAlert = ({ title, navigation, language }) => {
   Alert.alert(
-    "Save Successful",
-    `New card set "${title}" is added to the collection`,
+    strings[language].saveSuccessful,
+    `${strings[language].saveInfo1} "${title}" ${strings[language].saveInfo2}`,
     [
       {
         text: "OK",

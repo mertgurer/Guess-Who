@@ -1,0 +1,40 @@
+{
+  "home": "Home",
+  "play": "Play",
+  "settings": "Settings",
+  "categories": "Categories",
+  "customCardSet": "Custom Card Set",
+
+  "title": "Title",
+  "name": "Name",
+  "username": "Username",
+  "usernamePlaceholder": "Enter Username",
+  "languages": "Languages",
+  "deleteInfo": "Delete all custom card sets",
+
+  "create": "Create",
+  "createRoom": "Create Room",
+  "join": "Join",
+  "codeInfo": "Room Code",
+
+  "ok": "OK",
+  "cancel": "Cancel",
+  "delete": "Delete",
+
+  "changeSuccessful": "Change Successful",
+  "newUsernameInfo": "New username us set to",
+  "changeFailed": "Change Failed",
+  "sameUsername": "Username is same as before",
+  "emptyUsername": "Username can't be empty",
+  "deleteWarning": "Are you sure you want to delete all custom card sets",
+
+  "saveSuccessful": "Save Successful",
+  "saveInfo1": "New card set ",
+  "saveInfo2": " is added to the collection",
+  "saveFail": "Save Failed",
+  "saveFailInfo1": "A card set with the name ",
+  "saveFailInfo2": " already exists",
+  "cantSave": "Can't Save",
+  "cantSaveEmpty": "Title field can not be empty",
+  "cantSaveLittle": "There must be at least 2 card fields"
+}

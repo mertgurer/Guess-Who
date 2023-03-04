@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TouchableOpacity } from "react-native";
+import * as Localization from "expo-localization";
 
 import Octicons from "react-native-vector-icons/Octicons";
 
@@ -14,12 +15,14 @@ import CustomCardScreen from "./app/screens/CardCollection/CustomCardScreen";
 import HomeScreen from "./app/screens/HomeScreen";
 import SettingsScreen from "./app/screens/SettingsScreen";
 import StartScreen from "./app/screens/StartScreen";
+import { strings } from "./app/assets/languages";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const navigationRef = useRef(null);
-  const [language, setLanguage] = useState("en");
+  const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState();
   const [username, setUsername] = useState();
   const [customCardsArray, setCustomCardsArray] = useState();
   const [categoryData, setCategoryData] = useState();
@@ -28,6 +31,7 @@ export default function App() {
     try {
       const usernameValue = await AsyncStorage.getItem("username");
       const customCardsValue = await AsyncStorage.getItem("customCards");
+      const languageValue = await AsyncStorage.getItem("language");
 
       // get user name data
       if (usernameValue !== null) {
@@ -49,67 +53,101 @@ export default function App() {
       if (customCardsValue !== null) {
         setCustomCardsArray(JSON.parse(customCardsValue));
       }
+
+      // get language value
+      if (languageValue !== null) {
+        setLanguage(languageValue);
+      } else {
+        const systemLanguage = Localization.locale.split("-")[0];
+
+        if (strings.hasOwnProperty(systemLanguage)) {
+          setLanguage(systemLanguage);
+          await AsyncStorage.setItem("language", systemLanguage);
+        } else {
+          setLanguage("en");
+          await AsyncStorage.setItem("language", "en");
+        }
+      }
     } catch (e) {
       console.log(e);
     }
+
+    setLoading(false);
   };
 
   useEffect(() => {
     retriveUserRelatedData();
   }, []);
 
-  return (
-    <DataContext.Provider
-      value={{
-        categoryData,
-        setCategoryData,
-        username,
-        setUsername,
-        customCardsArray,
-        setCustomCardsArray,
-      }}
-    >
-      <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            headerTintColor: colors.white,
-            headerStyle: { backgroundColor: colors.tint },
-          }}
-        >
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
+  if (!loading) {
+    return (
+      <DataContext.Provider
+        value={{
+          categoryData,
+          setCategoryData,
+          username,
+          setUsername,
+          customCardsArray,
+          setCustomCardsArray,
+          language,
+          setLanguage,
+        }}
+      >
+        <NavigationContainer ref={navigationRef}>
+          <Stack.Navigator
+            initialRouteName={"Home"}
+            screenOptions={{
+              headerTintColor: colors.white,
+              headerStyle: { backgroundColor: colors.tint },
+            }}
+          >
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
 
-          <Stack.Screen name="Play" component={StartScreen} />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
-          <Stack.Screen
-            name="CardCategories"
-            component={CardCategoriesScreen}
-            options={({ navigation }) => ({
-              title: "Categories",
-              headerRight: () => (
-                <TouchableOpacity onPress={() => navigation.push("CustomCard")}>
-                  <Octicons name="plus" size={30} color={colors.white} />
-                </TouchableOpacity>
-              ),
-            })}
-          />
+            <Stack.Screen
+              name="Play"
+              component={StartScreen}
+              options={{ title: strings[language].play }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{ title: strings[language].settings }}
+            />
+            <Stack.Screen
+              name="CardCategories"
+              component={CardCategoriesScreen}
+              options={({ navigation }) => ({
+                title: strings[language].categories,
+                headerRight: () => (
+                  <TouchableOpacity
+                    onPress={() => navigation.push("CustomCard")}
+                  >
+                    <Octicons name="plus" size={30} color={colors.white} />
+                  </TouchableOpacity>
+                ),
+              })}
+            />
 
-          <Stack.Screen
-            name="Cards"
-            component={CardScreen}
-            options={({ route }) => ({ title: route.params.title })}
-          />
-          <Stack.Screen
-            name="CustomCard"
-            component={CustomCardScreen}
-            options={{ title: "Custom Card Set", presentation: "modal" }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </DataContext.Provider>
-  );
+            <Stack.Screen
+              name="Cards"
+              component={CardScreen}
+              options={({ route }) => ({ title: route.params.title })}
+            />
+            <Stack.Screen
+              name="CustomCard"
+              component={CustomCardScreen}
+              options={{
+                title: strings[language].customCardSet,
+                presentation: "modal",
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </DataContext.Provider>
+    );
+  }
 }

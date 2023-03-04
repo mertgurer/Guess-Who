@@ -7,7 +7,7 @@
     "icon": "",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "",
+      "image": "./app/assets/logo-black.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,6 +23,7 @@
     },
     "web": {
       "favicon": ""
-    }
+    },
+    "plugins": ["expo-localization"]
   }
 }

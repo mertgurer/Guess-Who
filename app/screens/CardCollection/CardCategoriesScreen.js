@@ -7,6 +7,7 @@ import {
   Pressable,
   RefreshControl,
   ImageBackground,
+  ActivityIndicator,
 } from "react-native";
 
 import backImage from "../../assets/backImage.png";
@@ -62,24 +63,12 @@ const CardCategoriesScreen = ({ navigation }) => {
         flex: 1,
         justifyContent: "center",
         backgroundColor: colors.primary,
-        alignItems: categoryData === undefined ? "center" : "stretch",
       }}
       source={backImage}
       resizeMode={"stretch"}
     >
       {categoryData === undefined ? (
-        <Text
-          style={{
-            fontSize: 40,
-            backgroundColor: colors.black,
-            color: colors.white,
-            padding: 20,
-            borderWidth: 1,
-            borderColor: colors.white,
-          }}
-        >
-          Loading...
-        </Text>
+        <ActivityIndicator color={colors.white} size="large" />
       ) : (
         <FlatList
           style={styles.cardCategories}

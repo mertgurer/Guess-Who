@@ -1,24 +1,32 @@
 {
+  "home": "Home",
   "play": "Play",
-  "categories": "Categories",
   "settings": "Settings",
+  "categories": "Categories",
   "customCardSet": "Custom Card Set",
 
   "title": "Title",
   "name": "Name",
   "username": "Username",
+  "usernamePlaceholder": "Enter Username",
+  "languages": "Languages",
   "deleteInfo": "Delete all custom card sets",
 
   "create": "Create",
   "createRoom": "Create Room",
   "join": "Join",
-  "codeInfo": "Enter Room Code",
+  "codeInfo": "Room Code",
+
+  "ok": "OK",
+  "cancel": "Cancel",
+  "delete": "Delete",
 
   "changeSuccessful": "Change Successful",
   "newUsernameInfo": "New username us set to",
   "changeFailed": "Change Failed",
   "sameUsername": "Username is same as before",
   "emptyUsername": "Username can't be empty",
+  "deleteWarning": "Are you sure you want to delete all custom card sets",
 
   "saveSuccessful": "Save Successful",
   "saveInfo1": "New card set ",

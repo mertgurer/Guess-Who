@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   ImageBackground,
   KeyboardAvoidingView,
   ScrollView,
@@ -16,9 +17,10 @@ import backImage from "../assets/backImage.png";
 import { getCategoriesData } from "../../firebase";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { strings } from "../assets/languages";
 
 const StartScreen = () => {
-  const { categoryData, setCategoryData, customCardsArray } =
+  const { categoryData, setCategoryData, customCardsArray, language } =
     useContext(DataContext);
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [roomCode, setRoomCode] = useState();
@@ -48,20 +50,20 @@ const StartScreen = () => {
       >
         <View style={styles.createArea}>
           <View style={styles.headerText}>
-            <Text style={{ fontSize: 30 }}>Create</Text>
+            <Text style={{ fontSize: 30 }}>{strings[language].create}</Text>
           </View>
-          <ScrollView
-            style={styles.categoryList}
-            contentContainerStyle={{ paddingVertical: 10 }}
-          >
-            {(() => {
-              if (categoryData === undefined) {
-                return (
-                  <View style={styles.loadingBox}>
-                    <Text style={styles.loadingText}>Loading...</Text>
-                  </View>
-                );
-              } else {
+          {categoryData === undefined ? (
+            <ActivityIndicator
+              style={styles.categoryList}
+              color={colors.black}
+              size="large"
+            />
+          ) : (
+            <ScrollView
+              style={styles.categoryList}
+              contentContainerStyle={{ paddingVertical: 10 }}
+            >
+              {(() => {
                 const elements = [];
                 for (let index = 0; index < categoryData.length; index++) {
                   elements.push(
@@ -94,28 +96,31 @@ const StartScreen = () => {
                   );
                 }
                 return elements;
-              }
-            })()}
-          </ScrollView>
+              })()}
+            </ScrollView>
+          )}
+
           <TouchableOpacity
             onPress={() => createRoom({ categoryIndex: categoryIndex })}
             activeOpacity={0.8}
           >
             <View style={styles.createButton}>
-              <Text style={styles.createButtonText}>Create Room</Text>
+              <Text style={styles.createButtonText}>
+                {strings[language].createRoom}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
         <View style={styles.joinArea}>
           <View style={styles.headerText}>
-            <Text style={{ fontSize: 30 }}>Join</Text>
+            <Text style={{ fontSize: 30 }}>{strings[language].join}</Text>
           </View>
           <View style={styles.joinZone}>
             <TextInput
               style={styles.roomCodeInput}
               onChangeText={setRoomCode}
               value={roomCode}
-              placeholder={"Enter Room Code"}
+              placeholder={strings[language].codeInfo}
               placeholderTextColor={colors.tint}
               keyboardType="number-pad"
             />
@@ -170,6 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   categoryList: {
+    flex: 1,
     backgroundColor: colors.secondary,
     width: "80%",
     borderRadius: 10,
