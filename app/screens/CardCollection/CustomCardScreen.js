@@ -6,6 +6,7 @@ import {
   ScrollView,
   Alert,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useContext, useState } from "react";
 
@@ -116,7 +117,10 @@ const CustomCardScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={130}>
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 130 : 0}
+      >
         <ScrollView
           contentContainerStyle={{ alignItems: "center", paddingBottom: 100 }}
         >
@@ -240,6 +244,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     borderWidth: 2,
     borderColor: colors.black,
+    fontFamily: "CentraBook",
   },
   buttonArea: {
     position: "absolute",
@@ -260,7 +265,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.third,
   },
-
   minuesButton: { width: 60 },
   plusButton: { width: 60 },
 });

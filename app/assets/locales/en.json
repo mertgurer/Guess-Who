@@ -4,6 +4,8 @@
   "settings": "Settings",
   "categories": "Categories",
   "customCardSet": "Custom Card Set",
+  "createGame": "Create Game",
+  "joinGame": "Join Game",
 
   "title": "Title",
   "name": "Name",
@@ -12,14 +14,13 @@
   "languages": "Languages",
   "deleteInfo": "Delete all custom card sets",
 
-  "create": "Create",
   "createRoom": "Create Room",
-  "join": "Join",
   "codeInfo": "Room Code",
 
   "ok": "OK",
   "cancel": "Cancel",
   "delete": "Delete",
+  "back": "Back",
 
   "deleteSet": "Are you sure you want to delete this card set",
 

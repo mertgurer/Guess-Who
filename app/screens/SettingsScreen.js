@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DataContext from "../../DataContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { strings } from "../assets/languages";
+import { fonts } from "../assets/fonts";
 
 const SettingsScreen = () => {
   const { username, setUsername, setCustomCardsArray, language, setLanguage } =
@@ -92,8 +93,18 @@ const SettingsScreen = () => {
                     }}
                     activeOpacity={0.8}
                   >
-                    <View style={styles.languageBox}>
-                      <Text>{key.toUpperCase()}</Text>
+                    <View
+                      style={[
+                        styles.languageBox,
+                        {
+                          borderColor:
+                            language === key ? colors.white : colors.black,
+                        },
+                      ]}
+                    >
+                      <Text style={{ fontFamily: "CentraMedium" }}>
+                        {key.toUpperCase()}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 );
@@ -115,7 +126,7 @@ const SettingsScreen = () => {
         activeOpacity={0.8}
       >
         <View style={styles.clearCustomCards}>
-          <Text style={{ fontWeight: "700" }}>
+          <Text style={{ fontFamily: "CentraBold", fontSize: 15 }}>
             {strings[language].deleteInfo}
           </Text>
         </View>
@@ -140,6 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 5,
     color: colors.white,
+    fontFamily: "CentraMedium",
   },
   usernameZone: {
     flexDirection: "row",
@@ -152,6 +164,8 @@ const styles = StyleSheet.create({
     borderColor: colors.black,
     borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
+    fontSize: 17,
+    fontFamily: "CentraBook",
   },
   saveButton: {
     width: 70,

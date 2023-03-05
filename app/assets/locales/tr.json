@@ -3,7 +3,9 @@
   "play": "Başlat",
   "settings": "Ayarlar",
   "categories": "Kategoriler",
-  "customCardSet": "Custom Card Set",
+  "customCardSet": "Özel Kart Seti",
+  "createGame": "Oyun Kur",
+  "joinGame": "Oyuna Katıl",
 
   "title": "Başlık",
   "name": "Ad",
@@ -12,14 +14,13 @@
   "languages": "Diller",
   "deleteInfo": "Bütün özel kart setlerini sil",
 
-  "create": "Oluştur",
   "createRoom": "Oda Oluştur",
-  "join": "Katıl",
   "codeInfo": "Oda Kodu",
 
   "ok": "Tamam",
   "cancel": "İptal",
   "delete": "Sil",
+  "back": "Geri",
 
   "deleteSet": "Bu kart setini silmek istediğine emin misin",
 

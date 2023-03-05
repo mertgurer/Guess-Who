@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import * as Localization from "expo-localization";
+import { useFonts } from "expo-font";
 
 import Octicons from "react-native-vector-icons/Octicons";
 
@@ -14,8 +15,9 @@ import CardScreen from "./app/screens/CardCollection/CardScreen";
 import CustomCardScreen from "./app/screens/CardCollection/CustomCardScreen";
 import HomeScreen from "./app/screens/HomeScreen";
 import SettingsScreen from "./app/screens/SettingsScreen";
-import StartScreen from "./app/screens/StartScreen";
+import StartScreen from "./app/screens/StartCollection/StartScreen";
 import { strings } from "./app/assets/languages";
+import { fonts } from "./app/assets/fonts";
 
 const Stack = createNativeStackNavigator();
 
@@ -79,7 +81,9 @@ export default function App() {
     retriveUserRelatedData();
   }, []);
 
-  if (!loading) {
+  const [fontsLoaded] = useFonts(fonts);
+
+  if (!loading && fontsLoaded) {
     return (
       <DataContext.Provider
         value={{
@@ -95,33 +99,46 @@ export default function App() {
       >
         <NavigationContainer ref={navigationRef}>
           <Stack.Navigator
-            initialRouteName={"Home"}
+            initialRouteName="Home"
             screenOptions={{
+              headerTitleStyle: { fontFamily: "CentraMedium", fontSize: 22 },
               headerTintColor: colors.white,
               headerStyle: { backgroundColor: colors.tint },
+              headerBackTitle: ` `,
+              backgroundColor: "red",
             }}
           >
             <Stack.Screen
               name="Home"
               component={HomeScreen}
-              options={{ headerShown: false }}
+              options={{
+                title: "",
+                headerShown: true,
+                headerTransparent: true,
+                headerStyle: { backgroundColor: "transparent" },
+              }}
             />
-
             <Stack.Screen
               name="Play"
               component={StartScreen}
-              options={{ title: strings[language].play }}
+              options={{ title: strings[language].play, headerShown: false }}
             />
             <Stack.Screen
               name="Settings"
               component={SettingsScreen}
-              options={{ title: strings[language].settings }}
+              options={{
+                title: strings[language].settings,
+                animation: "fade_from_bottom",
+                gestureEnabled: false,
+              }}
             />
             <Stack.Screen
               name="CardCategories"
               component={CardCategoriesScreen}
               options={({ navigation }) => ({
                 title: strings[language].categories,
+                animation: "fade_from_bottom",
+                gestureEnabled: false,
                 headerRight: () => (
                   <TouchableOpacity
                     onPress={() => navigation.push("CustomCard")}

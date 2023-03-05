@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: 20,
     textAlign: "center",
+    fontFamily: "CentraBook",
   },
 });
 
