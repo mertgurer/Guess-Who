@@ -6,18 +6,25 @@ import {
   View,
   Alert,
   Keyboard,
-  ImageBackground,
+  TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import React, { useContext, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
-import backImage from "../assets/backImage.png";
 import { colors } from "../assets/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import DataContext from "../../DataContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { strings } from "../assets/languages";
-import { fonts } from "../assets/fonts";
+
+const imageMap = {
+  en: require("../assets/locales/en.png"),
+  tr: require("../assets/locales/tr.png"),
+  es: require("../assets/locales/es.png"),
+  it: require("../assets/locales/it.png"),
+};
 
 const SettingsScreen = () => {
   const { username, setUsername, setCustomCardsArray, language, setLanguage } =
@@ -51,94 +58,104 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ImageBackground style={styles.container} source={backImage}>
-      <View style={styles.settings}>
-        <View>
-          <Text style={styles.infoText}>{strings[language].username}</Text>
-          <View style={styles.usernameZone}>
-            <TextInput
-              style={styles.input}
-              onChangeText={setInput}
-              value={input}
-              placeholder={strings[language].usernamePlaceholder}
-            />
-            <TouchableOpacity onPress={submitUsername} activeOpacity={0.8}>
-              <View style={styles.saveButton}>
-                <Ionicons
-                  name="checkmark-sharp"
-                  size={50}
-                  color={colors.black}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.languageZone}>
-          <Text style={styles.infoText}>{strings[language].languages}</Text>
-          <View style={styles.languageArea}>
-            {(() => {
-              const languageButtons = [];
-
-              for (const key in strings) {
-                languageButtons.push(
-                  <TouchableOpacity
-                    key={key}
-                    onPress={async () => {
-                      setLanguage(key);
-                      try {
-                        await AsyncStorage.setItem("language", key);
-                      } catch (e) {
-                        console.log(e);
-                      }
-                    }}
-                    activeOpacity={0.8}
-                  >
-                    <View
-                      style={[
-                        styles.languageBox,
-                        {
-                          borderColor:
-                            language === key ? colors.white : colors.black,
-                        },
-                      ]}
-                    >
-                      <Text style={{ fontFamily: "CentraMedium" }}>
-                        {key.toUpperCase()}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              }
-
-              return languageButtons;
-            })()}
-          </View>
-        </View>
-      </View>
-      <TouchableOpacity
-        style={{ flex: 1, justifyContent: "center" }}
-        onPress={() =>
-          deleteAlert({
-            setCustomCardsArray: setCustomCardsArray,
-            language: language,
-          })
-        }
-        activeOpacity={0.8}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <LinearGradient
+        style={styles.container}
+        colors={[colors.background1, colors.background2, colors.background3]}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 0, y: 1 }}
       >
-        <View style={styles.clearCustomCards}>
-          <Text style={{ fontFamily: "CentraBold", fontSize: 15 }}>
-            {strings[language].deleteInfo}
-          </Text>
+        <View style={styles.settings}>
+          <View>
+            <Text style={styles.infoText}>{strings[language].username}</Text>
+            <View style={styles.usernameZone}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setInput}
+                value={input}
+                placeholder={strings[language].usernamePlaceholder}
+              />
+              <TouchableOpacity onPress={submitUsername} activeOpacity={0.8}>
+                <View style={styles.saveButton}>
+                  <Ionicons
+                    name="checkmark-sharp"
+                    size={50}
+                    color={colors.black}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.languageZone}>
+            <Text style={[styles.infoText, { paddingBottom: 15 }]}>
+              {strings[language].languages}
+            </Text>
+            <View style={styles.languageArea}>
+              {(() => {
+                const languageButtons = [];
+
+                for (const key in strings) {
+                  languageButtons.push(
+                    <TouchableOpacity
+                      key={key}
+                      onPress={async () => {
+                        setLanguage(key);
+                        try {
+                          await AsyncStorage.setItem("language", key);
+                        } catch (e) {
+                          console.log(e);
+                        }
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View
+                        style={[
+                          styles.languageBox,
+                          {
+                            borderColor:
+                              language === key ? colors.white : colors.black,
+                          },
+                        ]}
+                      >
+                        <Image
+                          style={{ width: 62, height: 62, borderRadius: 10 }}
+                          source={imageMap[key]}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  );
+                }
+
+                return languageButtons;
+              })()}
+            </View>
+          </View>
         </View>
-      </TouchableOpacity>
-    </ImageBackground>
+        <TouchableOpacity
+          style={{ flex: 1, justifyContent: "center" }}
+          onPress={() =>
+            deleteAlert({
+              setCustomCardsArray: setCustomCardsArray,
+              language: language,
+            })
+          }
+          activeOpacity={0.8}
+        >
+          <View style={styles.clearCustomCards}>
+            <Text style={{ fontFamily: "CentraBold", fontSize: 15 }}>
+              {strings[language].deleteInfo}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </LinearGradient>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: "30%",
+    paddingVertical: "25%",
     backgroundColor: colors.primary,
     alignItems: "center",
   },
@@ -158,7 +175,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: colors.secondary,
-    width: 220,
+    width: 230,
     padding: 10,
     borderWidth: 2,
     borderColor: colors.black,
@@ -180,10 +197,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   languageZone: {
-    marginTop: 20,
+    marginTop: 30,
   },
   languageArea: {
-    width: 290,
+    width: 300,
     flexDirection: "row",
     justifyContent: "space-between",
   },

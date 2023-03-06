@@ -7,22 +7,23 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 
 import { colors } from "../assets/colors";
-import backImage from "../assets/backImage.png";
 import logo from "../assets/logo.png";
 
 const width = Dimensions.get("window").width;
 
 const HomeScreen = ({ navigation }) => {
   return (
-    <ImageBackground
+    <LinearGradient
       style={styles.home}
-      source={backImage}
-      resizeMode={"stretch"}
+      colors={[colors.background1, colors.background2, colors.background3]}
+      start={{ x: 1, y: 0 }}
+      end={{ x: 0, y: 1 }}
     >
       <View style={styles.logoArea}>
         <View style={styles.logo}>
@@ -61,14 +62,13 @@ const HomeScreen = ({ navigation }) => {
           <Octicons name="gear" size={50} color={colors.black} />
         </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   home: {
     flex: 1,
-    backgroundColor: colors.primary,
     alignItems: "center",
   },
   logoArea: {

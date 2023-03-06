@@ -17,6 +17,7 @@ import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { strings } from "../../assets/languages";
+import { LinearGradient } from "expo-linear-gradient";
 
 const CustomCardScreen = ({ navigation }) => {
   const { customCardsArray, setCustomCardsArray, language } =
@@ -116,7 +117,12 @@ const CustomCardScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      style={styles.container}
+      colors={[colors.background1, colors.background2, colors.background3]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={Platform.OS === "ios" ? 130 : 0}
@@ -209,7 +215,7 @@ const CustomCardScreen = ({ navigation }) => {
           <Foundation name="plus" size={35} color={colors.black} />
         </TouchableOpacity>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

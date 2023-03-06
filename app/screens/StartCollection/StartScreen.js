@@ -22,9 +22,21 @@ const StartScreen = ({ navigation }) => {
       screenOptions={({ route }) => ({
         headerTintColor: colors.white,
         headerTitleStyle: { fontFamily: "CentraMedium", fontSize: 22 },
-        headerStyle: { backgroundColor: colors.tint },
-        tabBarStyle: { backgroundColor: colors.tint },
-
+        headerStyle: {
+          backgroundColor: colors.tint,
+          borderWidth: 10,
+          borderColor: colors.tint,
+          borderBottomColor: colors.tint,
+        },
+        tabBarStyle: {
+          borderTopWidth: 0,
+          backgroundColor: colors.tint,
+          height: Platform.OS === "ios" ? 90 : 80,
+          ...(Platform.OS === "android" && { paddingBottom: 20 }),
+        },
+        tabBarLabelStyle: { fontFamily: "CentraMedium", fontSize: 12 },
+        tabBarActiveTintColor: colors.white,
+        tabBarInactiveTintColor: "gray",
         headerLeft: () =>
           BackButton({ navigation: navigation, language: language }),
         tabBarIcon: ({ focused, color, size }) => {
@@ -37,13 +49,15 @@ const StartScreen = ({ navigation }) => {
               ? "arrow-redo-circle"
               : "arrow-redo-circle-outline";
           }
-
-          // You can return any component that you like here!
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return (
+            <Ionicons
+              style={{ paddingTop: 5 }}
+              name={iconName}
+              size={size}
+              color={color}
+            />
+          );
         },
-        tabBarActiveTintColor: colors.fourth,
-        tabBarInactiveTintColor: colors.primary,
-        tabBarLabelStyle: { fontFamily: "CentraBook" },
       })}
     >
       <Tab.Screen

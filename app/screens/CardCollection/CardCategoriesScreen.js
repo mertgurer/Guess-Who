@@ -6,11 +6,10 @@ import {
   Text,
   Pressable,
   RefreshControl,
-  ImageBackground,
   ActivityIndicator,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
-import backImage from "../../assets/backImage.png";
 import { colors } from "../../assets/colors";
 import { DataContext } from "../../../DataContext";
 import { getCategoriesData } from "../../../firebase";
@@ -58,14 +57,14 @@ const CardCategoriesScreen = ({ navigation }) => {
   );
 
   return (
-    <ImageBackground
+    <LinearGradient
       style={{
         flex: 1,
         justifyContent: "center",
-        backgroundColor: colors.primary,
       }}
-      source={backImage}
-      resizeMode={"stretch"}
+      colors={[colors.background1, colors.background2, colors.background3]}
+      start={{ x: 1, y: 0 }}
+      end={{ x: 0, y: 1 }}
     >
       {categoryData === undefined ? (
         <ActivityIndicator color={colors.white} size="large" />
@@ -85,7 +84,7 @@ const CardCategoriesScreen = ({ navigation }) => {
           }
         />
       )}
-    </ImageBackground>
+    </LinearGradient>
   );
 };
 

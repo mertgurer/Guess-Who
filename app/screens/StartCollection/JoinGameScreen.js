@@ -1,16 +1,17 @@
 import React, { useContext, useState } from "react";
 import {
-  ImageBackground,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
+  Keyboard,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import backImage from "../../assets/backImage.png";
 import DataContext from "../../../DataContext";
 import { colors } from "../../assets/colors";
 import { strings } from "../../assets/languages";
@@ -19,20 +20,29 @@ const JoinGameScreen = () => {
   const { language } = useContext(DataContext);
   const [roomCode, setRoomCode] = useState();
 
+  const handleChange = (text) => {
+    setRoomCode(text.replace(/[^0-9]/g, ""));
+  };
+
   return (
-    <ImageBackground
-      style={styles.container}
-      source={backImage}
-      resizeMode={"stretch"}
-    >
-      <View style={styles.joinZone}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <LinearGradient
+        style={styles.container}
+        colors={[colors.background1, colors.background2, colors.background3]}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{strings[language].codeInfo}</Text>
+        </View>
+
         <TextInput
           style={styles.roomCodeInput}
-          onChangeText={setRoomCode}
+          onChangeText={handleChange}
           value={roomCode}
           placeholder={strings[language].codeInfo}
-          placeholderTextColor={colors.tint}
-          keyboardType="number-pad"
+          keyboardType="numeric"
+          maxLength={4}
         />
         <TouchableOpacity
           onPress={() => joinRoom({ roomCode: roomCode })}
@@ -42,8 +52,8 @@ const JoinGameScreen = () => {
             <Ionicons name="arrow-forward" size={50} color={colors.black} />
           </View>
         </TouchableOpacity>
-      </View>
-    </ImageBackground>
+      </LinearGradient>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -55,32 +65,45 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  joinZone: {
-    flexDirection: "row",
+  header: {
+    width: 200,
+    height: 60,
+    backgroundColor: colors.third,
+    borderRadius: 10,
+    borderWidth: 3,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 30,
+  },
+  headerText: {
+    fontSize: 25,
+    fontFamily: "CentraBook",
   },
   roomCodeInput: {
     backgroundColor: colors.secondary,
     width: 220,
+    height: 60,
     padding: 10,
     borderWidth: 2,
     borderColor: colors.black,
-    borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     fontSize: 20,
     textAlign: "center",
     fontFamily: "CentraBook",
   },
   joinButton: {
-    width: 70,
+    width: 220,
     height: 60,
     backgroundColor: colors.third,
     borderWidth: 2,
     borderColor: colors.black,
     justifyContent: "center",
     alignItems: "center",
-    borderLeftWidth: 0,
+    borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopWidth: 0,
   },
 });
 
