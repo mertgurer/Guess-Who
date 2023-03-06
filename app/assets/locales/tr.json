@@ -39,5 +39,9 @@
   "saveFailInfo2": "zaten mevcut",
   "cantSave": "Kayıt edilemiyor",
   "cantSaveEmpty": "Başlık boş bırakılamaz",
-  "cantSaveLittle": "En az iki kart alanı bulunmalı"
+  "cantSaveLittle": "En az iki kart alanı bulunmalı",
+
+  "category": "Kategori",
+  "createInfo": "Oda kodunu arkadaşına söyle ve oynamaya başla",
+  "createStatus": "Diğer oyuncunun katılması bekleniyor"
 }

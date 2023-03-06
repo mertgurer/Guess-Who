@@ -31,8 +31,8 @@ const StartScreen = ({ navigation }) => {
         tabBarStyle: {
           borderTopWidth: 0,
           backgroundColor: colors.tint,
-          height: Platform.OS === "ios" ? 90 : 80,
-          ...(Platform.OS === "android" && { paddingBottom: 20 }),
+          height: Platform.OS === "ios" ? 90 : 70,
+          ...(Platform.OS === "android" && { paddingBottom: 10 }),
         },
         tabBarLabelStyle: { fontFamily: "CentraMedium", fontSize: 12 },
         tabBarActiveTintColor: colors.white,

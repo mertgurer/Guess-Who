@@ -39,5 +39,10 @@
   "saveFailInfo2": " already exists",
   "cantSave": "Can't Save",
   "cantSaveEmpty": "Title field can not be empty",
-  "cantSaveLittle": "There must be at least 2 card fields"
+  "cantSaveLittle": "There must be at least 2 card fields",
+
+  "category": "Category",
+  "createInfo": "Give the Room Code to your friend and start playing",
+  "createStatus": "Waiting for other player to join",
+  "createdBy": "Created By"
 }

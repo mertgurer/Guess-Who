@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StatusBar, Text, TouchableOpacity, View } from "react-native";
 import * as Localization from "expo-localization";
 import { useFonts } from "expo-font";
 
@@ -18,6 +18,7 @@ import SettingsScreen from "./app/screens/SettingsScreen";
 import StartScreen from "./app/screens/StartCollection/StartScreen";
 import { strings } from "./app/assets/languages";
 import { fonts } from "./app/assets/fonts";
+import PickScreen from "./app/screens/PlayCollection/PickScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -97,6 +98,7 @@ export default function App() {
           setLanguage,
         }}
       >
+        <StatusBar barStyle={"light-content"} />
         <NavigationContainer ref={navigationRef}>
           <Stack.Navigator
             initialRouteName="Home"
@@ -161,6 +163,11 @@ export default function App() {
                 title: strings[language].customCardSet,
                 presentation: "modal",
               }}
+            />
+            <Stack.Screen
+              name="PickCard"
+              component={PickScreen}
+              options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>
