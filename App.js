@@ -167,7 +167,10 @@ export default function App() {
             <Stack.Screen
               name="PickCard"
               component={PickScreen}
-              options={{ headerShown: false }}
+              options={{
+                title: strings[language].pickCard,
+                headerBackVisible: false,
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>

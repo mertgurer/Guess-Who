@@ -6,6 +6,7 @@
   "customCardSet": "Custom Card Set",
   "createGame": "Create Game",
   "joinGame": "Join Game",
+  "pickCard": "Pick a card",
 
   "title": "Title",
   "name": "Name",
@@ -44,5 +45,8 @@
   "category": "Category",
   "createInfo": "Give the Room Code to your friend and start playing",
   "createStatus": "Waiting for other player to join",
-  "createdBy": "Created By"
+  "createdBy": "Created By",
+
+  "gameAborted": "Game Aborted",
+  "oponentLeft": "Oponent Left"
 }

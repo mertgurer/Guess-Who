@@ -6,6 +6,7 @@
   "customCardSet": "Özel Kart Seti",
   "createGame": "Oyun Kur",
   "joinGame": "Oyuna Katıl",
+  "pickCard": "Bir kart seç",
 
   "title": "Başlık",
   "name": "Ad",
@@ -43,5 +44,9 @@
 
   "category": "Kategori",
   "createInfo": "Oda kodunu arkadaşına söyle ve oynamaya başla",
-  "createStatus": "Diğer oyuncunun katılması bekleniyor"
+  "createStatus": "Diğer oyuncunun katılması bekleniyor",
+  "createdBy": "Yaratıcı",
+
+  "gameAborted": "Oyun iptal edildi",
+  "oponentLeft": "Rakip oyundan çıktı"
 }
