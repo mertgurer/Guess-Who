@@ -19,6 +19,7 @@ import StartScreen from "./app/screens/StartCollection/StartScreen";
 import { strings } from "./app/assets/languages";
 import { fonts } from "./app/assets/fonts";
 import PickScreen from "./app/screens/PlayCollection/PickScreen";
+import GameScreen from "./app/screens/PlayCollection/GameScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -170,6 +171,15 @@ export default function App() {
               options={{
                 title: strings[language].pickCard,
                 headerBackVisible: false,
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="GameScreen"
+              component={GameScreen}
+              options={{
+                headerShown: false,
+                gestureEnabled: false,
               }}
             />
           </Stack.Navigator>

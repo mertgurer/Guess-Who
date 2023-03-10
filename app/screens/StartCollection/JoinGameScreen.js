@@ -217,7 +217,7 @@ const joinRoom = async ({ roomCode, username, navigation }) => {
 
     unsubscribe();
     await updateDoc(docRef, { p2_name: username });
-    navigation.push("PickCard", { docRef: docRef });
+    navigation.push("PickCard", { docRef: docRef, p1orp2: "p2" });
   } catch (e) {
     console.error(e);
   }

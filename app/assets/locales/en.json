@@ -23,14 +23,14 @@
   "delete": "Delete",
   "back": "Back",
 
-  "deleteSet": "Are you sure you want to delete this card set",
+  "deleteSet": "Are you sure you want to delete this card set?",
 
   "changeSuccessful": "Change Successful",
   "newUsernameInfo": "New username us set to",
   "changeFailed": "Change Failed",
   "sameUsername": "Username is same as before",
   "emptyUsername": "Username can't be empty",
-  "deleteWarning": "Are you sure you want to delete all custom card sets",
+  "deleteWarning": "Are you sure you want to delete all custom card sets?",
 
   "saveSuccessful": "Save Successful",
   "saveInfo1": "New card set ",
@@ -48,5 +48,14 @@
   "createdBy": "Created By",
 
   "gameAborted": "Game Aborted",
-  "oponentLeft": "Oponent Left"
+  "opponentLeft": "Opponent Left",
+
+  "lockIn": "Lock In",
+  "lockInInfo": "Are you sure you want to lock in this card?",
+  "noCard": "No card selected",
+  "noCardInfo": "You must chose a card to lock in",
+  "alreadyCard": "Already locked in",
+  "alreadyCardInfo": "You already picked a card",
+  "noCardLockInfo": "You must lock in a card to start the game",
+  "noCardLockOpponentInfo": "Your opponent hasn't picked a card yet"
 }

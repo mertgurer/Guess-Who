@@ -23,14 +23,14 @@
   "delete": "Sil",
   "back": "Geri",
 
-  "deleteSet": "Bu kart setini silmek istediğine emin misin",
+  "deleteSet": "Bu kart setini silmek istediğine emin misin?",
 
   "changeSuccessful": "Ad değiştirme başarılı",
   "newUsernameInfo": "Yeni kullanıcı adınız",
   "changeFailed": "Ad değiştirme tamamlanamadı",
   "sameUsername": "Yeni kullanıcı adı eskisiyle aynı",
   "emptyUsername": "Kullanıcı adı boş olamaz",
-  "deleteWarning": "Özel kart setlerini silmek istediğinize emin misiniz?",
+  "deleteWarning": "Özel kart setlerini silmek istediğinize emin misin?",
 
   "saveSuccessful": "Kayıt başarılı",
   "saveInfo1": "Yeni kart seti",
@@ -48,5 +48,14 @@
   "createdBy": "Yaratıcı",
 
   "gameAborted": "Oyun iptal edildi",
-  "oponentLeft": "Rakip oyundan çıktı"
+  "opponentLeft": "Rakip oyundan çıktı",
+
+  "lockIn": "Kitle",
+  "lockInInfo": "Bu kartı kitlemek istediğine emin misin?",
+  "noCard": "Kart seçilmedi",
+  "noCardInfo": "Kitlemek için bir kart seçmen lazım",
+  "alreadyCard": "Kart seçili",
+  "alreadyCardInfo": "Zaten bir kart seçili",
+  "noCardLockInfo": "Oyunu başlatmak için bir kart kitlemen lazım",
+  "noCardLockOpponentInfo": "Rakibiniz henüz bir kart seçmedi"
 }

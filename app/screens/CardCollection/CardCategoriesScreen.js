@@ -66,7 +66,7 @@ const CardCategoriesScreen = ({ navigation }) => {
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      {categoryData === undefined ? (
+      {!categoryData ? (
         <ActivityIndicator color={colors.white} size="large" />
       ) : (
         <FlatList
