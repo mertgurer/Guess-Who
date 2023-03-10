@@ -7,9 +7,8 @@ import { strings } from "../../assets/languages";
 import DataContext from "../../../DataContext";
 
 const PickScreen = ({ route, navigation }) => {
-  const { language } = useContext(DataContext);
+  const { language, username } = useContext(DataContext);
   const docRef = route.params?.docRef;
-  const username = route.params?.username;
   const [docData, setDocData] = useState();
 
   useEffect(() => {
@@ -21,7 +20,6 @@ const PickScreen = ({ route, navigation }) => {
           strings[language].gameAborted,
           strings[language].oponentLeft
         );
-
         unsubscribe();
         deleteDoc(docRef);
         navigation.goBack();
@@ -33,7 +31,6 @@ const PickScreen = ({ route, navigation }) => {
           strings[language].gameAborted,
           strings[language].oponentLeft
         );
-
         unsubscribe();
         deleteDoc(docRef);
         navigation.goBack();
@@ -43,29 +40,30 @@ const PickScreen = ({ route, navigation }) => {
         navigation.goBack();
       }
     });
-    return unsubscribe;
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
-  if (!docData) {
-    return <Text>Loading...</Text>;
+  if (docData) {
+    return (
+      <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+        <Text>{docData.title}</Text>
+        <TouchableOpacity
+          onPress={async () => {
+            if (docData.p1_name === username) {
+              await updateDoc(docRef, { roomCode: -1 });
+            } else {
+              await updateDoc(docRef, { roomCode: -2 });
+            }
+          }}
+        >
+          <Ionicons name="close" size={30} />
+        </TouchableOpacity>
+      </View>
+    );
   }
-
-  return (
-    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      <Text>{docData.title}</Text>
-      <TouchableOpacity
-        onPress={async () => {
-          if (docData.p1_name === username) {
-            await updateDoc(docRef, { roomCode: -1 });
-          } else {
-            await updateDoc(docRef, { roomCode: -2 });
-          }
-        }}
-      >
-        <Ionicons name="close" size={30} />
-      </TouchableOpacity>
-    </View>
-  );
 };
 
 export default PickScreen;

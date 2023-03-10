@@ -259,16 +259,16 @@ const failAlert = ({ message, language }) => {
 const deleteAlert = ({ setCustomCardsArray, language }) => {
   Alert.alert(strings[language].deleteWarning, "", [
     {
+      text: strings[language].cancel,
+      style: "cancel",
+    },
+    {
       text: strings[language].delete,
       style: "destructive",
       onPress: () => {
         saveCardState();
         setCustomCardsArray(undefined);
       },
-    },
-    {
-      text: strings[language].cancel,
-      style: "cancel",
     },
   ]);
 };

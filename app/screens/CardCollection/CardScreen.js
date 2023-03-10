@@ -105,11 +105,11 @@ const deleteAlert = ({
     strings[language].deleteSet,
     [
       {
-        text: "Cancel",
+        text: strings[language].cancel,
         style: "cancel",
       },
       {
-        text: strings[language].cancel,
+        text: strings[language].delete,
         style: "destructive",
         onPress: async () => {
           const removedCustomCards = customCardsArray.filter(

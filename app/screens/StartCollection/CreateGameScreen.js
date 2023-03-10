@@ -348,7 +348,7 @@ const createRoom = async ({
         setModalVisible(false);
         setButtonDisabled(false);
         unsubscribe();
-        navigation.push("PickCard", { docRef: docRef, username: username });
+        navigation.push("PickCard", { docRef: docRef });
       }
     });
   } catch (e) {
