@@ -125,7 +125,8 @@ const CustomCardScreen = ({ navigation }) => {
     >
       <KeyboardAvoidingView
         behavior="padding"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 130 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 0}
+        style={{ flex: 1 }}
       >
         <ScrollView
           contentContainerStyle={{ alignItems: "center", paddingBottom: 100 }}

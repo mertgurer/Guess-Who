@@ -22,6 +22,8 @@
   "cancel": "İptal",
   "delete": "Sil",
   "back": "Geri",
+  "yes": "Evet",
+  "no": "Hayır",
 
   "deleteSet": "Bu kart setini silmek istediğine emin misin?",
 
@@ -30,7 +32,7 @@
   "changeFailed": "Ad değiştirme tamamlanamadı",
   "sameUsername": "Yeni kullanıcı adı eskisiyle aynı",
   "emptyUsername": "Kullanıcı adı boş olamaz",
-  "deleteWarning": "Özel kart setlerini silmek istediğinize emin misin?",
+  "deleteWarning": "Özel kart setlerini silmek istediğine emin misin?",
 
   "saveSuccessful": "Kayıt başarılı",
   "saveInfo1": "Yeni kart seti",
@@ -57,5 +59,17 @@
   "alreadyCard": "Kart seçili",
   "alreadyCardInfo": "Zaten bir kart seçili",
   "noCardLockInfo": "Oyunu başlatmak için bir kart kitlemen lazım",
-  "noCardLockOpponentInfo": "Rakibiniz henüz bir kart seçmedi"
+  "noCardLockOpponentInfo": "Rakibiniz henüz bir kart seçmedi",
+
+  "yourCard": "Senin kartın",
+  "turn": "Sıra",
+  "turnCount": "Tur Sayısı",
+  "yourTurn": "Senin Sıran!",
+  "youStart": "Sen Başlıyorsun!",
+  "youStartInfo": "Arkadaşına bir soru sor ve eşleşmeyen kartları kapat",
+  "opponentStart": "Rakibin Başlıyor!",
+  "opponentStartInfo": "Arkadaşının sorusuna cevap ver",
+  "exit": "Oyundan çıkmak istediğine emin misin?",
+  "endTurn": "Turu Bitir",
+  "guess": "Tahmin Et"
 }

@@ -36,6 +36,7 @@ const CardCategoriesScreen = ({ navigation }) => {
     useContext(DataContext);
 
   const [isFocused, setIsFocused] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchCategoriesData = async () => {
     if (customCardsArray) {
@@ -43,6 +44,18 @@ const CardCategoriesScreen = ({ navigation }) => {
     } else {
       setCategoryData(await getCategoriesData());
     }
+  };
+
+  const refreshFetchCategoriesData = async () => {
+    setIsRefreshing(true);
+
+    if (customCardsArray) {
+      setCategoryData([...(await getCategoriesData()), ...customCardsArray]);
+    } else {
+      setCategoryData(await getCategoriesData());
+    }
+
+    setIsRefreshing(false);
   };
 
   useEffect(() => {
@@ -80,7 +93,10 @@ const CardCategoriesScreen = ({ navigation }) => {
           contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}
           keyExtractor={(item) => item.id.toString()}
           refreshControl={
-            <RefreshControl onRefresh={() => fetchCategoriesData()} />
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={() => refreshFetchCategoriesData()}
+            />
           }
         />
       )}

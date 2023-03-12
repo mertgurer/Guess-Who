@@ -16,6 +16,7 @@ import {
   getDocs,
   updateDoc,
   onSnapshot,
+  getDoc,
 } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -212,13 +213,16 @@ const joinRoom = async ({ roomCode, username, navigation }) => {
   const q = query(gamesRef, where("roomCode", "==", roomCode));
   const querySnapshot = await getDocs(q);
 
-  try {
-    const docRef = querySnapshot.docs[0].ref;
+  const docRef = querySnapshot.docs[0].ref;
+  const doc = await getDoc(docRef);
 
-    unsubscribe();
-    await updateDoc(docRef, { p2_name: username });
-    navigation.push("PickCard", { docRef: docRef, p1orp2: "p2" });
-  } catch (e) {
-    console.error(e);
-  }
+  console.log(doc.data().title);
+
+  unsubscribe();
+  await updateDoc(docRef, { p2_name: username });
+  navigation.push("PickCard", {
+    docRef: docRef,
+    p1orp2: "p2",
+    title: doc.data().title,
+  });
 };

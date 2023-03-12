@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAgugdz9VyTTb0mhqFZ2b1SM6m0S4SAYas",
@@ -12,6 +13,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const storage = getStorage();
 
 export const getCategoriesData = async () => {
   const categoriesRef = collection(db, "Categories");

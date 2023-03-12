@@ -132,6 +132,7 @@ const CreateGameScreen = ({ navigation }) => {
             roomCode: uniqueRoomCode,
             setModalVisible: setModalVisible,
             setButtonDisabled: setButtonDisabled,
+            id: categoryData[categoryIndex].id,
             navigation: navigation,
           });
         }}
@@ -323,15 +324,17 @@ const createRoom = async ({
   roomCode,
   setModalVisible,
   setButtonDisabled,
+  id,
   navigation,
 }) => {
   try {
     const docRef = await addDoc(collection(db, "Games"), {
       cards: cards.cards,
+      id: id,
       p1_name: username,
       p1_pick: "notSet",
-      p2_name: "notSet",
-      p2_pick: "notSet",
+      p2_name: "notSeto",
+      p2_pick: "notSeto",
       roomCode: roomCode,
       title: cards.title,
       turn: "notSet",
@@ -348,7 +351,11 @@ const createRoom = async ({
         setModalVisible(false);
         setButtonDisabled(false);
         unsubscribe();
-        navigation.push("PickCard", { docRef: docRef, p1orp2: "p1" });
+        navigation.push("PickCard", {
+          docRef: docRef,
+          p1orp2: "p1",
+          title: cards.title,
+        });
       }
     });
   } catch (e) {

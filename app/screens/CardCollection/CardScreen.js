@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   FlatList,
@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -14,17 +15,52 @@ import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { strings } from "../../assets/languages";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { storage } from "../../../firebase";
 
-const Item = ({ card }) => (
-  <View style={styles.cardBox}>
-    <Text style={styles.cardBoxContent}>{card}</Text>
-  </View>
-);
+const Item = ({ card, url, originals }) => {
+  return (
+    <View style={styles.cardBox}>
+      <Image
+        source={{ uri: url }}
+        style={{ width: 165, height: 165, borderRadius: 13 }}
+      />
+      <Text
+        style={[
+          styles.cardBoxContent,
+          originals && {
+            bottom: 10,
+            color: colors.white,
+            backgroundColor: "#000000b0",
+            width: 170,
+          },
+        ]}
+      >
+        {card}
+      </Text>
+    </View>
+  );
+};
 
 const CardScreen = ({ route, navigation }) => {
   const { customCardsArray, setCustomCardsArray, language } =
     useContext(DataContext);
   const { title, cards, id } = route.params;
+  const [urls, setUrls] = useState();
+
+  const fetchImage = async () => {
+    const storageRef = ref(storage, title);
+    const allImages = await listAll(storageRef);
+
+    const imageObjects = await Promise.all(
+      allImages.items.map(async (imageRef) => {
+        const object = await getDownloadURL(imageRef);
+        return { [imageRef.name.split(".")[0]]: object };
+      })
+    );
+
+    setUrls(Object.assign({}, ...imageObjects));
+  };
 
   useEffect(() => {
     if (id > 99) {
@@ -45,10 +81,24 @@ const CardScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         ),
       });
+    } else {
+      fetchImage();
     }
   }, [id]);
 
-  return (
+  return urls ? (
+    <FlatList
+      style={styles.cards}
+      data={cards}
+      renderItem={({ item }) => (
+        <Item card={item} url={urls[item]} originals={true} />
+      )}
+      numColumns={2}
+      columnWrapperStyle={{ justifyContent: "space-evenly" }}
+      contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}
+      keyExtractor={(index) => index.toString()}
+    />
+  ) : (
     <FlatList
       style={styles.cards}
       data={cards}
@@ -88,6 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     fontFamily: "CentraBook",
+    position: "absolute",
   },
 });
 

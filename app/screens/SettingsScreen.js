@@ -132,7 +132,7 @@ const SettingsScreen = () => {
           </View>
         </View>
         <TouchableOpacity
-          style={{ flex: 1, justifyContent: "center" }}
+          style={{ justifyContent: "center" }}
           onPress={() =>
             deleteAlert({
               setCustomCardsArray: setCustomCardsArray,
@@ -155,12 +155,10 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: "25%",
-    backgroundColor: colors.primary,
     alignItems: "center",
+    justifyContent: "space-evenly",
   },
   settings: {
-    flex: 2,
     justifyContent: "center",
     alignItems: "center",
   },

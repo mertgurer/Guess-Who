@@ -3,6 +3,7 @@ import {
   Alert,
   BackHandler,
   FlatList,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,6 +12,7 @@ import {
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -18,6 +20,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { strings } from "../../assets/languages";
 import DataContext from "../../../DataContext";
 import { colors } from "../../assets/colors";
+import { storage } from "../../../firebase";
 
 const PickScreen = ({ route, navigation }) => {
   const { language, username } = useContext(DataContext);
@@ -29,8 +32,25 @@ const PickScreen = ({ route, navigation }) => {
   const [opponentPicked, setOponenPicked] = useState(false);
   const [turn, setTurn] = useState(0);
   const [disbaleStart, setDisableStart] = useState(false);
+  const [id, setId] = useState(100);
+  const [urls, setUrls] = useState();
 
   const p1orp2 = route.params.p1orp2;
+  const title = route.params.title;
+
+  const fetchImage = async () => {
+    const storageRef = ref(storage, title);
+    const allImages = await listAll(storageRef);
+
+    const imageObjects = await Promise.all(
+      allImages.items.map(async (imageRef) => {
+        const object = await getDownloadURL(imageRef);
+        return { [imageRef.name.split(".")[0]]: object };
+      })
+    );
+
+    setUrls(Object.assign({}, ...imageObjects));
+  };
 
   useEffect(() => {
     const backAction = async () => {
@@ -44,6 +64,8 @@ const PickScreen = ({ route, navigation }) => {
 
     const unsubscribe = onSnapshot(docRef, (doc) => {
       setDocData(doc.data());
+
+      setId(doc.data().id);
 
       // check for player names
       if (p1orp2 === "p1") {
@@ -84,12 +106,19 @@ const PickScreen = ({ route, navigation }) => {
 
       // check for turn change
       if (doc.data().turn !== "notSet") {
+        unsubscribe();
+
         navigation.navigate("GameScreen", {
           docRef: docRef,
           p1orp2: p1orp2,
+          pick: doc.data().cards[playerPick],
+          cardSize: doc.data().cards.length,
+          title: title,
         });
       }
     });
+
+    fetchImage();
 
     BackHandler.addEventListener("hardwareBackPress", backAction);
 
@@ -97,7 +126,7 @@ const PickScreen = ({ route, navigation }) => {
       BackHandler.removeEventListener("hardwareBackPress", backAction);
       unsubscribe();
     };
-  }, []);
+  }, [playerPick]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -145,7 +174,7 @@ const PickScreen = ({ route, navigation }) => {
         );
       },
     });
-  }, [navigation, docData, docRef, username, opponentName, opponentPicked]);
+  }, [navigation, docData, opponentName, opponentPicked]);
 
   return (
     <LinearGradient
@@ -154,9 +183,7 @@ const PickScreen = ({ route, navigation }) => {
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      {!docData ? (
-        <ActivityIndicator color={colors.white} size="large" />
-      ) : (
+      {docData && urls ? (
         <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
           <FlatList
             style={styles.cards}
@@ -168,6 +195,8 @@ const PickScreen = ({ route, navigation }) => {
                 pick={pick}
                 setPick={setPick}
                 playerPick={playerPick}
+                url={urls[item]}
+                originals={id > 99 ? false : true}
               />
             )}
             numColumns={2}
@@ -192,7 +221,7 @@ const PickScreen = ({ route, navigation }) => {
                   <FontAwesome
                     name="random"
                     size={30}
-                    color={colors.white}
+                    color={colors.black}
                     style={{ marginTop: 3, marginLeft: 1 }}
                   />
                 ) : turn === 1 ? (
@@ -220,7 +249,7 @@ const PickScreen = ({ route, navigation }) => {
             >
               <Text
                 style={{
-                  color: colors.white,
+                  color: colors.black,
                   fontSize: 25,
                   fontFamily: "CentraBook",
                 }}
@@ -235,12 +264,14 @@ const PickScreen = ({ route, navigation }) => {
                 onPress={() =>
                   handleStartGame({
                     docRef: docRef,
+                    docData: docData,
                     turn: turn,
                     playerPick: playerPick,
                     opponentPicked: opponentPicked,
                     p1orp2: p1orp2,
-                    language: language,
                     setDisableStart: setDisableStart,
+                    title: title,
+                    language: language,
                     navigation: navigation,
                   })
                 }
@@ -249,13 +280,15 @@ const PickScreen = ({ route, navigation }) => {
                 <FontAwesome
                   name="arrow-right"
                   size={30}
-                  color={colors.white}
+                  color={colors.black}
                   style={{ marginLeft: 4, marginBottom: 2 }}
                 />
               </TouchableOpacity>
             )}
           </View>
         </View>
+      ) : (
+        <ActivityIndicator color={colors.white} size="large" />
       )}
     </LinearGradient>
   );
@@ -301,6 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     fontFamily: "CentraBook",
+    position: "absolute",
   },
   buttonArea: {
     flexDirection: "row",
@@ -312,31 +346,32 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.primary,
+    backgroundColor: colors.third,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: colors.white,
+    borderWidth: 3,
+    borderColor: colors.black,
     marginHorizontal: 10,
   },
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.third,
     width: 60,
     height: 60,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: colors.white,
+    borderWidth: 3,
+    borderColor: colors.black,
   },
   turnText: {
-    color: colors.white,
+    color: colors.black,
     fontSize: 30,
     fontFamily: "CentraBold",
+    textAlign: "center",
   },
   startButton: {},
 });
 
-const Item = ({ card, index, pick, setPick, playerPick }) => (
+const Item = ({ card, index, pick, setPick, playerPick, url, originals }) => (
   <TouchableOpacity
     onPress={() => {
       setPick(index);
@@ -350,7 +385,23 @@ const Item = ({ card, index, pick, setPick, playerPick }) => (
         playerPick === index && styles.pickedCard,
       ]}
     >
-      <Text style={styles.cardBoxContent}>{card}</Text>
+      <Image
+        source={{ uri: url }}
+        style={{ width: 165, height: 165, borderRadius: 13 }}
+      />
+      <Text
+        style={[
+          styles.cardBoxContent,
+          originals && {
+            bottom: 10,
+            color: colors.white,
+            backgroundColor: "#000000b0",
+            width: 170,
+          },
+        ]}
+      >
+        {card}
+      </Text>
     </View>
   </TouchableOpacity>
 );
@@ -383,11 +434,11 @@ const handleLockIn = async ({
     strings[language].lockInInfo,
     [
       {
-        text: strings[language].cancel,
+        text: strings[language].no,
         style: "cancel",
       },
       {
-        text: strings[language].ok,
+        text: strings[language].yes,
         style: "ok",
         onPress: async () => {
           setPlayerPick(pick);
@@ -405,12 +456,14 @@ const handleLockIn = async ({
 
 const handleStartGame = async ({
   docRef,
+  docData,
   turn,
   playerPick,
   opponentPicked,
   p1orp2,
-  language,
   setDisableStart,
+  title,
+  language,
   navigation,
 }) => {
   if (playerPick === -1) {
@@ -429,17 +482,20 @@ const handleStartGame = async ({
     let firstMove;
     if (turn === 0) {
       temp = Math.floor(Math.random() * 2) + 1;
-      firstMove = temp === 1 ? "P1" : "P2";
+      firstMove = temp === 1 ? "p1" : "p2";
     } else if (turn === 1) {
-      firstMove = "P1";
+      firstMove = "p1";
     } else {
-      firstMove = "P2";
+      firstMove = "p2";
     }
     await updateDoc(docRef, { turn: firstMove });
 
     navigation.navigate("GameScreen", {
       docRef: docRef,
       p1orp2: p1orp2,
+      pick: docData.cards[playerPick],
+      cardSize: docData.cards.length,
+      title: title,
     });
   }
 };

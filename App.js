@@ -2,9 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StatusBar, Text, TouchableOpacity, View } from "react-native";
+import { StatusBar, TouchableOpacity } from "react-native";
 import * as Localization from "expo-localization";
 import { useFonts } from "expo-font";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
 
 import Octicons from "react-native-vector-icons/Octicons";
 
@@ -108,7 +113,7 @@ export default function App() {
               headerTintColor: colors.white,
               headerStyle: { backgroundColor: colors.tint },
               headerBackTitle: ` `,
-              backgroundColor: "red",
+              orientation: "portrait",
             }}
           >
             <Stack.Screen
@@ -178,7 +183,6 @@ export default function App() {
               name="GameScreen"
               component={GameScreen}
               options={{
-                headerShown: false,
                 gestureEnabled: false,
               }}
             />
