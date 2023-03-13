@@ -287,6 +287,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 80,
     height: 45,
-    backgroundColor: colors.black,
+    backgroundColor: colors.primary,
   },
 });
