@@ -1,8 +1,4 @@
 {
-  "gameBy": "Yapımcı",
-  "howToPlay": "Nasıl Oynanır?",
-  "howToPlayInfo": "Popüler kart setleri ile veya arkadaşlarınızı içeren kendi setlerinizi oluşturup Guess Who oyanyın \n\n1) Desteden bir kart seçin \n2) Soru sorun ve kartları kapatın \n3) Hazır olduğunda tahmin yap \n4) Diğer kartı ilk tahmin eden kazanır \n\n*Aynı soru iki kez sorulamaz \n*Sadece 'Evet' veya 'Hayır' soruları",
-
   "home": "Başlangıç sayfası",
   "play": "Başlat",
   "settings": "Ayarlar",
@@ -58,9 +54,6 @@
 
   "lockIn": "Kitle",
   "lockInInfo": "Bu kartı kitlemek istediğine emin misin?",
-  "random": "Rastgele",
-  "lockInRandom": "Rastgele bir kart kitle",
-  "lockInRandomInfo": "Rastgele bir kartı kilitlemek istediğine emin misiniz?",
   "noCard": "Kart seçilmedi",
   "noCardInfo": "Kitlemek için bir kart seçmen lazım",
   "alreadyCard": "Kart seçili",
@@ -73,16 +66,11 @@
   "turnCount": "Tur Sayısı",
   "yourTurn": "Senin Sıran!",
   "youStart": "Sen Başlıyorsun!",
-  "youStartInfo": "Arkadaşına bir soru sor ve eşleşmeyen kartları kapat. Her soru sadece bir kez sorulabilir. Sadece 'Evet' veya 'Hayır' soruları ",
+  "youStartInfo": "Arkadaşına bir soru sor ve eşleşmeyen kartları kapat",
   "opponentStart": "Rakibin Başlıyor!",
-  "opponentStartInfo": "Arkadaşının sorusuna cevap ver. Her soru sadece bir kez sorulabilir. Sadece 'Evet' veya 'Hayır' soruları",
+  "opponentStartInfo": "Arkadaşının sorusuna cevap ver",
   "exit": "Oyundan çıkmak istediğine emin misin?",
   "endTurn": "Turu Bitir",
   "guess": "Tahmin Et",
-  "guessInfo": "Tahminde bulunmak soru sormadan turu bitirir",
-  "correctGuess": "Kazandın!",
-  "correctGuessInfo": "Tebrikler, doğru bildin!",
-  "wrongGuess": "Opps.. Bilemedin",
-  "lost": "Kaybettin!",
-  "lostInfo": "Rakibin doğru tahmin etti. Kartı: "
+  "guessInfo": "Tahminde bulunmak soru sormadan turu bitirir"
 }

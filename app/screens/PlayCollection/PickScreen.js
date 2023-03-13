@@ -34,6 +34,7 @@ const PickScreen = ({ route, navigation }) => {
   const [disbaleStart, setDisableStart] = useState(false);
   const [id, setId] = useState(100);
   const [urls, setUrls] = useState();
+  const [random, setRandom] = useState(false);
 
   const p1orp2 = route.params.p1orp2;
   const title = route.params.title;
@@ -179,7 +180,12 @@ const PickScreen = ({ route, navigation }) => {
   return (
     <LinearGradient
       style={styles.container}
-      colors={[colors.background1, colors.background2, colors.background3]}
+      colors={[
+        colors.background1,
+        colors.background2,
+        colors.background2,
+        colors.background1,
+      ]}
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
@@ -197,11 +203,12 @@ const PickScreen = ({ route, navigation }) => {
                 playerPick={playerPick}
                 url={urls[item]}
                 originals={id > 99 ? false : true}
+                random={random}
               />
             )}
             numColumns={2}
             columnWrapperStyle={{ justifyContent: "space-evenly" }}
-            contentContainerStyle={{ paddingBottom: 90, paddingTop: 10 }}
+            contentContainerStyle={{ paddingBottom: 120, paddingTop: 10 }}
             keyExtractor={(index) => index.toString()}
           />
           <View style={styles.buttonArea}>
@@ -231,32 +238,65 @@ const PickScreen = ({ route, navigation }) => {
                 )}
               </TouchableOpacity>
             )}
-
-            <TouchableOpacity
-              style={styles.confirmButton}
-              onPress={() =>
-                handleLockIn({
-                  docRef,
-                  docData,
-                  pick,
-                  p1orp2,
-                  playerPick,
-                  setPlayerPick,
-                  language,
-                })
-              }
-              activeOpacity={0.8}
-            >
-              <Text
-                style={{
-                  color: colors.black,
-                  fontSize: 25,
-                  fontFamily: "CentraBook",
+            <View>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                  const randomPick = Math.floor(
+                    Math.random() * docData.cards.length
+                  );
+                  handleLockIn({
+                    docRef: docRef,
+                    docData: docData,
+                    pick: randomPick,
+                    p1orp2: p1orp2,
+                    playerPick: playerPick,
+                    setPlayerPick: setPlayerPick,
+                    language: language,
+                    random: true,
+                    setRandom: setRandom,
+                  });
                 }}
+                activeOpacity={0.8}
               >
-                {strings[language].lockIn}
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: colors.black,
+                    fontSize: 25,
+                    fontFamily: "CentraBook",
+                  }}
+                >
+                  {strings[language].random}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() =>
+                  handleLockIn({
+                    docRef: docRef,
+                    docData: docData,
+                    pick: pick,
+                    p1orp2: p1orp2,
+                    playerPick: playerPick,
+                    setPlayerPick: setPlayerPick,
+                    language: language,
+                    random: false,
+                    setRandom: setRandom,
+                  })
+                }
+                activeOpacity={0.8}
+              >
+                <Text
+                  style={{
+                    color: colors.black,
+                    fontSize: 25,
+                    fontFamily: "CentraBook",
+                  }}
+                >
+                  {strings[language].lockIn}
+                </Text>
+              </TouchableOpacity>
+            </View>
             {p1orp2 === "p1" && (
               <TouchableOpacity
                 style={styles.button}
@@ -340,10 +380,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "absolute",
     bottom: 30,
+    alignItems: "flex-end",
   },
   confirmButton: {
     width: 150,
-    height: 60,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.third,
@@ -351,11 +392,12 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: colors.black,
     marginHorizontal: 10,
+    marginTop: 5,
   },
   button: {
     backgroundColor: colors.third,
     width: 60,
-    height: 60,
+    height: 85,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -371,7 +413,16 @@ const styles = StyleSheet.create({
   startButton: {},
 });
 
-const Item = ({ card, index, pick, setPick, playerPick, url, originals }) => (
+const Item = ({
+  card,
+  index,
+  pick,
+  setPick,
+  playerPick,
+  url,
+  originals,
+  random,
+}) => (
   <TouchableOpacity
     onPress={() => {
       setPick(index);
@@ -382,7 +433,7 @@ const Item = ({ card, index, pick, setPick, playerPick, url, originals }) => (
       style={[
         styles.cardBox,
         pick === index && styles.activeCard,
-        playerPick === index && styles.pickedCard,
+        playerPick === index && !random && styles.pickedCard,
       ]}
     >
       <Image
@@ -414,6 +465,8 @@ const handleLockIn = async ({
   playerPick,
   setPlayerPick,
   language,
+  random,
+  setRandom,
 }) => {
   if (playerPick !== -1) {
     Alert.alert(
@@ -429,29 +482,37 @@ const handleLockIn = async ({
     return;
   }
 
-  Alert.alert(
-    `${strings[language].lockIn} "${docData.cards[pick]}"`,
-    strings[language].lockInInfo,
-    [
-      {
-        text: strings[language].no,
-        style: "cancel",
-      },
-      {
-        text: strings[language].yes,
-        style: "ok",
-        onPress: async () => {
-          setPlayerPick(pick);
+  let header, body;
 
-          if (p1orp2 === "p1") {
-            await updateDoc(docRef, { p1_pick: docData.cards[pick] });
-          } else {
-            await updateDoc(docRef, { p2_pick: docData.cards[pick] });
-          }
-        },
+  if (random) {
+    header = strings[language].lockInRandom;
+    body = strings[language].lockInRandomInfo;
+  } else {
+    header = `${strings[language].lockIn} "${docData.cards[pick]}"`;
+    body = strings[language].lockInInfo;
+  }
+
+  Alert.alert(header, body, [
+    {
+      text: strings[language].no,
+      style: "cancel",
+    },
+    {
+      text: strings[language].yes,
+      style: "ok",
+      onPress: async () => {
+        setPlayerPick(pick);
+
+        setRandom(random);
+
+        if (p1orp2 === "p1") {
+          await updateDoc(docRef, { p1_pick: docData.cards[pick] });
+        } else {
+          await updateDoc(docRef, { p2_pick: docData.cards[pick] });
+        }
       },
-    ]
-  );
+    },
+  ]);
 };
 
 const handleStartGame = async ({

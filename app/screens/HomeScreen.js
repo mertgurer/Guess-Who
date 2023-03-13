@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   Dimensions,
   Image,
+  Text,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -12,15 +13,24 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Octicons from "react-native-vector-icons/Octicons";
 
 import { colors } from "../assets/colors";
-import logo from "../assets/logo.png";
+import logo from "../assets/gameLogo.png";
+import { strings } from "../assets/languages";
+import DataContext from "../../DataContext";
 
 const width = Dimensions.get("window").width;
 
 const HomeScreen = ({ navigation }) => {
+  const { language } = useContext(DataContext);
+
   return (
     <LinearGradient
       style={styles.home}
-      colors={[colors.background1, colors.background2, colors.background3]}
+      colors={[
+        colors.background1,
+        colors.background2,
+        colors.background2,
+        colors.background1,
+      ]}
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
@@ -60,6 +70,14 @@ const HomeScreen = ({ navigation }) => {
         >
           <Octicons name="gear" size={50} color={colors.black} />
         </TouchableOpacity>
+      </View>
+      <View style={styles.watermark}>
+        <Text style={{ fontSize: 13, fontStyle: "italic" }}>
+          {strings[language].gameBy}
+        </Text>
+        <Text style={{ fontSize: 13, fontFamily: "CentraMedium" }}>
+          Mert Gürer
+        </Text>
       </View>
     </LinearGradient>
   );
@@ -113,6 +131,11 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 2.5,
     marginTop: width * 0.024,
+  },
+  watermark: {
+    position: "absolute",
+    bottom: 20,
+    alignItems: "center",
   },
 });
 

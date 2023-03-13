@@ -54,7 +54,12 @@ const CreateGameScreen = ({ navigation }) => {
   return (
     <LinearGradient
       style={styles.container}
-      colors={[colors.background1, colors.background2, colors.background3]}
+      colors={[
+        colors.background1,
+        colors.background2,
+        colors.background2,
+        colors.background1,
+      ]}
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
@@ -96,10 +101,6 @@ const CreateGameScreen = ({ navigation }) => {
                             index !== categoryIndex
                               ? colors.white
                               : colors.black,
-                          fontFamily:
-                            index !== categoryIndex
-                              ? "CentraBook"
-                              : "CentraBold",
                         },
                       ]}
                     >
@@ -247,10 +248,10 @@ const styles = StyleSheet.create({
   },
   itemBoxContent: {
     fontSize: 22,
-    fontFamily: "CentraMedium",
+    fontFamily: "CentraBook",
+    textAlign: "center",
   },
   seperator: {
-    width: "70%",
     height: 1,
     backgroundColor: colors.black,
     marginHorizontal: "15%",
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modal: {
     width: "70%",
@@ -333,8 +334,8 @@ const createRoom = async ({
       id: id,
       p1_name: username,
       p1_pick: "notSet",
-      p2_name: "notSeto",
-      p2_pick: "notSeto",
+      p2_name: "notSet",
+      p2_pick: "notSet",
       roomCode: roomCode,
       title: cards.title,
       turn: "notSet",

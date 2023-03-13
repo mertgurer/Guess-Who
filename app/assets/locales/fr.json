@@ -1,8 +1,4 @@
 {
-  "gameBy": "Game by",
-  "howToPlay": "How To Play?",
-  "howToPlayInfo": "Use popular card sets or create your own sets that include your friends to play Guess Who \n\n1) Pick a card from the set \n2) Ask questions and close the cards \n3) Make a guess when ready \n4) First to guess the other card wins \n\n*Can't ask the same question twice \n*Only 'Yes' or 'No' questions",
-
   "home": "Home",
   "play": "Play",
   "settings": "Settings",
@@ -49,7 +45,7 @@
   "cantSaveLittle": "There must be at least 2 card fields",
 
   "category": "Category",
-  "createInfo": "Give the room code to your friend and start playing",
+  "createInfo": "Give the Room Code to your friend and start playing",
   "createStatus": "Waiting for other player to join",
   "createdBy": "Created By",
 
@@ -58,9 +54,6 @@
 
   "lockIn": "Lock In",
   "lockInInfo": "Are you sure you want to lock in this card?",
-  "random": "Random",
-  "lockInRandom": "Lock In a random card",
-  "lockInRandomInfo": "Are you sure you want to lock in a random card?",
   "noCard": "No card selected",
   "noCardInfo": "You must chose a card to lock in",
   "alreadyCard": "Already locked in",
@@ -73,16 +66,10 @@
   "turnCount": "Turn Count",
   "yourTurn": "Your Turn!",
   "youStart": "You Start!",
-  "youStartInfo": "Ask your friend a question and close unmatching cards. Every question can only be asked once. Only 'Yes' or 'No' questions",
+  "youStartInfo": "Ask your friend a question and close unmatching cards",
   "opponentStart": "Your Opponent Starts!",
-  "opponentStartInfo": "Answer your friends question. Every question can only be asked once. Only 'Yes' or 'No' questions",
+  "opponentStartInfo": "Answer your friends question",
   "exit": "Are you sure you want to exit?",
   "endTurn": "End Turn",
-  "guess": "Make a Guess",
-  "guessInfo": "Making a guess ends the turn without asking a question",
-  "correctGuess": "You Win!",
-  "correctGuessInfo": "Congrats, you guessed right!",
-  "wrongGuess": "Opps.. Wrong Guess",
-  "lost": "You Lost!",
-  "lostInfo": "Your opponent guessed right. Their card was: "
+  "guess": "Make a Guess"
 }

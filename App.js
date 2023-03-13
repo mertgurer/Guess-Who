@@ -2,7 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StatusBar, TouchableOpacity } from "react-native";
+import {
+  Image,
+  Modal,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import * as Localization from "expo-localization";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
@@ -12,7 +20,10 @@ LogBox.ignoreLogs([
 ]);
 
 import Octicons from "react-native-vector-icons/Octicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
+import logo from "./app/assets/logo.png";
 import { colors } from "./app/assets/colors";
 import { DataContext } from "./DataContext";
 import CardCategoriesScreen from "./app/screens/CardCollection/CardCategoriesScreen";
@@ -124,6 +135,7 @@ export default function App() {
                 headerShown: true,
                 headerTransparent: true,
                 headerStyle: { backgroundColor: "transparent" },
+                headerRight: () => <HeaderRightComponent language={language} />,
               }}
             />
             <Stack.Screen
@@ -192,3 +204,89 @@ export default function App() {
     );
   }
 }
+
+const HeaderRightComponent = ({ language }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <AntDesign name="questioncircle" size={30} color={colors.black} />
+      </TouchableOpacity>
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalFrame}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>{strings[language].howToPlay}</Text>
+            <Text style={styles.modalText}>
+              {strings[language].howToPlayInfo}
+            </Text>
+            <View style={styles.logo}>
+              <Image style={{ width: 80, height: 45 }} source={logo} />
+            </View>
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Ionicons name="close" size={30} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    right: -10,
+  },
+  modalFrame: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modal: {
+    width: "75%",
+    borderRadius: 20,
+    borderWidth: 5,
+    borderColor: colors.tint,
+    backgroundColor: colors.third,
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  modalCloseButton: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+    padding: 5,
+  },
+  modalTitle: {
+    fontFamily: "CentraBold",
+    fontSize: 30,
+    textAlign: "center",
+  },
+  modalText: {
+    fontFamily: "CentraBook",
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 22,
+    marginTop: 10,
+  },
+  logo: {
+    marginTop: 20,
+    width: 80,
+    height: 45,
+    backgroundColor: colors.black,
+  },
+});

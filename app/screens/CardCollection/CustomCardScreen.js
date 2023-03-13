@@ -43,38 +43,33 @@ const CustomCardScreen = ({ navigation }) => {
     );
     const filteredTitle = customCards.title.trim();
 
-    // save them in a temp card set
-    let id = 100;
-    if (customCardsArray) {
-      id += customCardsArray.length;
-    }
-
-    const tempCardSet = {
-      title: filteredTitle,
-      cards: filteredCrads,
-      id: id,
-    };
-
     // validate new card set
-    if (tempCardSet.title.length !== 0 && tempCardSet.cards.length >= 2) {
+    if (filteredTitle.length !== 0 && filteredCrads.length >= 2) {
       if (customCardsArray) {
         let uniqueFlag = true;
 
         // check the saved sets for title match
         for (let i = 0; i < customCardsArray.length; i++) {
-          if (tempCardSet.title === customCardsArray[i].title) {
+          if (filteredTitle === customCardsArray[i].title) {
             failAlert({
               header: strings[language].saveFail,
-              message: `${strings[language].saveFailInfo1} "${tempCardSet.title}" ${strings[language].saveFailInfo2}`,
+              message: `${strings[language].saveFailInfo1} "${filteredTitle}" ${strings[language].saveFailInfo2}`,
             });
             uniqueFlag = false;
             break;
           }
         }
-        // if fisrts set title is unique add it to the array
+        // if first set title is unique add it to the array
         if (uniqueFlag) {
+          const id = customCardsArray[customCardsArray.length - 1].id + 1;
+
+          const tempCardSet = {
+            title: filteredTitle,
+            cards: filteredCrads,
+            id: id,
+          };
           successAlert({
-            title: tempCardSet.title,
+            title: filteredTitle,
             navigation: navigation,
             language,
           });
@@ -86,8 +81,14 @@ const CustomCardScreen = ({ navigation }) => {
       }
       // if there is no other card sets add this one
       else {
+        const tempCardSet = {
+          title: filteredTitle,
+          cards: filteredCrads,
+          id: 100,
+        };
+
         successAlert({
-          title: tempCardSet.title,
+          title: filteredTitle,
           navigation: navigation,
           language,
         });
@@ -96,7 +97,7 @@ const CustomCardScreen = ({ navigation }) => {
       }
     }
     // if field values are not validated
-    else if (tempCardSet.title.length === 0) {
+    else if (filteredTitle.length === 0) {
       failAlert({
         header: strings[language].cantSave,
         message: strings[language].cantSaveEmpty,
@@ -114,6 +115,8 @@ const CustomCardScreen = ({ navigation }) => {
       cards: filteredCrads,
       title: filteredTitle,
     });
+
+    console.log(customCardsArray);
   };
 
   return (

@@ -75,7 +75,12 @@ const CardCategoriesScreen = ({ navigation }) => {
         flex: 1,
         justifyContent: "center",
       }}
-      colors={[colors.background1, colors.background2, colors.background3]}
+      colors={[
+        colors.background1,
+        colors.background2,
+        colors.background2,
+        colors.background1,
+      ]}
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
     >

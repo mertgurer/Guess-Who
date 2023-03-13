@@ -55,7 +55,12 @@ const JoinGameScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <LinearGradient
         style={styles.container}
-        colors={[colors.background1, colors.background2, colors.background3]}
+        colors={[
+          colors.background1,
+          colors.background2,
+          colors.background2,
+          colors.background1,
+        ]}
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
@@ -112,6 +117,7 @@ export default JoinGameScreen;
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 31,
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -215,8 +221,6 @@ const joinRoom = async ({ roomCode, username, navigation }) => {
 
   const docRef = querySnapshot.docs[0].ref;
   const doc = await getDoc(docRef);
-
-  console.log(doc.data().title);
 
   unsubscribe();
   await updateDoc(docRef, { p2_name: username });

@@ -10,6 +10,7 @@ import {
   View,
   FlatList,
   Image,
+  ScrollView,
 } from "react-native";
 import React, {
   useContext,
@@ -35,7 +36,7 @@ const GameScreen = ({ route, navigation }) => {
   const [docData, setDocData] = useState();
   const [turn, setTurn] = useState();
   const [turnCount, setTurnCount] = useState(-1);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalInfoVisible, setModalInfoVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState();
   const [modalText, setModalText] = useState();
   const [markedCards, setMarkedCards] = useState(
@@ -43,8 +44,9 @@ const GameScreen = ({ route, navigation }) => {
   );
   const [id, setId] = useState(100);
   const [urls, setUrls] = useState();
-
-  const maxTurns = 10;
+  const [modalGuessVisible, setModalGuessVisible] = useState(false);
+  const [guessIndex, setGuessIndex] = useState(-1);
+  const [gameOver, setGameOver] = useState(false);
 
   const fetchImage = async () => {
     const storageRef = ref(storage, title);
@@ -62,6 +64,8 @@ const GameScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(docRef, (doc) => {
+      if (gameOver) return;
+
       setDocData(doc.data());
 
       setId(doc.data().id);
@@ -71,7 +75,7 @@ const GameScreen = ({ route, navigation }) => {
         setTurnCount((prevTurnCount) => prevTurnCount + 2);
         setModalTitle(strings[language].youStart);
         setModalText(strings[language].youStartInfo);
-        setModalVisible(true);
+        setModalInfoVisible(true);
       } else if (
         prevTurnCountRef.current === -1 &&
         doc.data().turn !== p1orp2
@@ -79,13 +83,13 @@ const GameScreen = ({ route, navigation }) => {
         setTurnCount((prevTurnCount) => prevTurnCount + 1);
         setModalTitle(strings[language].opponentStart);
         setModalText(strings[language].opponentStartInfo);
-        setModalVisible(true);
-      } else if (doc.data().turn === p1orp2) {
+        setModalInfoVisible(true);
+      } else if (doc.data().turn === p1orp2 && !gameOver) {
         setTurnCount((prevTurnCount) => prevTurnCount + 1);
 
         setModalTitle(strings[language].yourTurn);
         setModalText("");
-        setModalVisible(true);
+        setModalInfoVisible(true);
       }
 
       // assign turn
@@ -96,18 +100,9 @@ const GameScreen = ({ route, navigation }) => {
       }
 
       // check for room code change
-      if (doc.data().roomCode === -1 && doc.data().p2_name === username) {
-        Alert.alert(
-          strings[language].gameAborted,
-          strings[language].opponentLeft,
-          [{ text: strings[language].ok }]
-        );
-        unsubscribe();
-        deleteDoc(docRef);
-        navigation.navigate("Home");
-      } else if (
-        doc.data().roomCode === -2 &&
-        doc.data().p1_name === username
+      if (
+        (doc.data().roomCode === -1 && doc.data().p2_name === username) ||
+        (doc.data().roomCode === -2 && doc.data().p1_name === username)
       ) {
         Alert.alert(
           strings[language].gameAborted,
@@ -121,6 +116,14 @@ const GameScreen = ({ route, navigation }) => {
         unsubscribe();
         deleteDoc(docRef);
         navigation.navigate("Home");
+      } else if (
+        (doc.data().roomCode === 1 && p1orp2 === "p2") ||
+        (doc.data().roomCode === 2 && p1orp2 === "p1")
+      ) {
+        setGameOver(true);
+        setModalTitle(strings[language].lost);
+        setModalText(strings[language].lostInfo);
+        setModalInfoVisible(true);
       }
     });
 
@@ -129,7 +132,7 @@ const GameScreen = ({ route, navigation }) => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [gameOver]);
 
   const prevTurnCountRef = useRef(0);
   useEffect(() => {
@@ -152,9 +155,9 @@ const GameScreen = ({ route, navigation }) => {
             <Text style={styles.headerTitle}>
               {strings[language].turnCount}
             </Text>
-            <Text style={styles.headerLabel}>{`${
-              turnCount === 0 ? 1 : turnCount
-            }/${maxTurns}`}</Text>
+            <Text style={styles.headerLabel}>
+              {turnCount === 0 ? 1 : turnCount}
+            </Text>
           </View>
         </SafeAreaView>
       ),
@@ -164,7 +167,12 @@ const GameScreen = ({ route, navigation }) => {
   return (
     <LinearGradient
       style={styles.container}
-      colors={[colors.background1, colors.background2, colors.background3]}
+      colors={[
+        colors.background1,
+        colors.background2,
+        colors.background2,
+        colors.background1,
+      ]}
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
@@ -197,8 +205,17 @@ const GameScreen = ({ route, navigation }) => {
               }}
             >
               <TouchableOpacity
-                style={styles.buttonBox}
-                onPress={async () => {}}
+                style={[
+                  styles.buttonBox,
+                  username !== turn && {
+                    backgroundColor: "grey",
+                    opacity: 0.9,
+                  },
+                ]}
+                onPress={() => {
+                  setModalGuessVisible(!modalGuessVisible);
+                  setGuessIndex(-1);
+                }}
                 disabled={username !== turn}
                 activeOpacity={0.8}
               >
@@ -215,7 +232,13 @@ const GameScreen = ({ route, navigation }) => {
               }}
             >
               <TouchableOpacity
-                style={styles.buttonBox}
+                style={[
+                  styles.buttonBox,
+                  username !== turn && {
+                    backgroundColor: "grey",
+                    opacity: 0.9,
+                  },
+                ]}
                 onPress={async () => {
                   if (docData.turn === p1orp2) {
                     if (p1orp2 === "p1") {
@@ -259,16 +282,99 @@ const GameScreen = ({ route, navigation }) => {
           >
             <Ionicons name="close" size={32} color={colors.black} />
           </TouchableOpacity>
+          <Modal
+            visible={modalGuessVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => {
+              setModalInfoVisible(!modalGuessVisible);
+            }}
+          >
+            <View style={styles.modalFrame}>
+              <View style={styles.modalGuess}>
+                <Text style={styles.guessInfo}>
+                  {strings[language].guessInfo}
+                </Text>
+                <ScrollView>
+                  {(() => {
+                    const elements = [];
+                    for (let index = 0; index < docData.cards.length; index++) {
+                      if (!markedCards[index]) {
+                        if (index !== 0)
+                          elements.push(
+                            <View key={index - 100} style={styles.seperator} />
+                          );
+                        elements.push(
+                          <TouchableOpacity
+                            key={index}
+                            onPress={() => {
+                              setGuessIndex(index);
+                            }}
+                            activeOpacity={0.5}
+                          >
+                            <View
+                              style={[
+                                styles.guessBox,
+                                guessIndex === index && styles.activeGuessBox,
+                              ]}
+                            >
+                              <Text style={styles.guessBoxContent}>
+                                {docData.cards[index]}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      }
+                    }
+                    return elements;
+                  })()}
+                </ScrollView>
+                <TouchableOpacity
+                  style={styles.guessButton}
+                  disabled={guessIndex === -1}
+                  onPress={() => {
+                    makeGuess({
+                      docRef: docRef,
+                      language: language,
+                      cards: docData.cards,
+                      pick: guessIndex,
+                      oponentPick:
+                        p1orp2 === "p1" ? docData.p2_pick : docData.p1_pick,
+                      p1orp2: p1orp2,
+                      setModalGuessVisible: setModalGuessVisible,
+                      setModalTitle: setModalTitle,
+                      setModalText: setModalText,
+                      setModalInfoVisible: setModalInfoVisible,
+                      setGameOver: setGameOver,
+                    });
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.guessButtonContent}>
+                    {strings[language].guess}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalCloseButton}
+                  onPress={() => {
+                    setModalGuessVisible(!modalGuessVisible);
+                  }}
+                >
+                  <Ionicons name="close" size={30} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       ) : (
         <ActivityIndicator color={colors.white} size="large" />
       )}
       <Modal
-        visible={modalVisible}
+        visible={modalInfoVisible}
         transparent={true}
         animationType="fade"
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setModalInfoVisible(!modalInfoVisible);
         }}
       >
         <View style={styles.modalFrame}>
@@ -276,14 +382,26 @@ const GameScreen = ({ route, navigation }) => {
             <TouchableOpacity
               style={styles.modalCloseButton}
               onPress={() => {
-                setModalVisible(!modalVisible);
+                if (gameOver) {
+                  navigation.navigate("Home");
+                  deleteDoc(docRef);
+                } else {
+                  setModalInfoVisible(!modalInfoVisible);
+                }
               }}
             >
               <Ionicons name="close" size={30} />
             </TouchableOpacity>
             <Text style={styles.modalTitle}>{modalTitle}</Text>
             {modalText !== "" && (
-              <Text style={styles.modalText}>{modalText}</Text>
+              <Text style={styles.modalText}>
+                {modalText}
+                {gameOver && docData.turn !== p1orp2 && (
+                  <Text style={{ fontFamily: "CentraBold" }}>
+                    {p1orp2 === "p1" ? docData.p2_pick : docData.p1_pick}
+                  </Text>
+                )}
+              </Text>
             )}
           </View>
         </View>
@@ -317,7 +435,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modal: {
     width: "70%",
@@ -325,7 +443,7 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderColor: colors.tint,
     backgroundColor: colors.third,
-    paddingVertical: 50,
+    paddingVertical: 40,
     paddingHorizontal: 20,
     alignItems: "center",
   },
@@ -344,8 +462,6 @@ const styles = StyleSheet.create({
     fontFamily: "CentraBook",
     fontSize: 20,
     textAlign: "center",
-    paddingHorizontal: 10,
-    paddingTop: 10,
   },
   container: {
     flex: 1,
@@ -388,9 +504,14 @@ const styles = StyleSheet.create({
   buttonArea: {
     width: "100%",
     position: "absolute",
-    bottom: 30,
+    bottom: 0,
+    paddingBottom: 30,
+    paddingTop: 10,
     flexDirection: "row",
     justifyContent: "space-evenly",
+    backgroundColor: colors.halfBlack,
+    borderColor: colors.black,
+    borderTopWidth: 2,
   },
   buttonBox: {
     width: 150,
@@ -419,6 +540,58 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingLeft: 1,
+  },
+  modalGuess: {
+    maxHeight: "70%",
+    width: "80%",
+    borderRadius: 20,
+    borderWidth: 5,
+    borderColor: colors.tint,
+    backgroundColor: colors.third,
+    paddingVertical: 20,
+  },
+  guessInfo: {
+    textAlign: "center",
+    paddingHorizontal: 50,
+    marginBottom: 10,
+    fontFamily: "CentraBook",
+  },
+  guessBox: {
+    alignItems: "center",
+    padding: 15,
+    marginHorizontal: "10%",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  activeGuessBox: {
+    backgroundColor: colors.secondary,
+    borderColor: colors.tint,
+  },
+  guessBoxContent: {
+    fontSize: 22,
+    fontFamily: "CentraBook",
+    textAlign: "center",
+  },
+  seperator: {
+    height: 1,
+    backgroundColor: colors.black,
+    marginHorizontal: "15%",
+    marginVertical: 7,
+  },
+  guessButton: {
+    borderWidth: 2,
+    borderColor: colors.tint,
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginHorizontal: "20%",
+    marginTop: 10,
+    backgroundColor: colors.primary,
+  },
+  guessButtonContent: {
+    fontSize: 20,
+    fontFamily: "CentraMedium",
+    textAlign: "center",
   },
 });
 
@@ -452,3 +625,43 @@ const Item = ({ card, index, markedCards, setMarkedCards, url, originals }) => (
     </View>
   </TouchableOpacity>
 );
+
+const makeGuess = async ({
+  docRef,
+  language,
+  cards,
+  pick,
+  oponentPick,
+  p1orp2,
+  setModalGuessVisible,
+  setModalTitle,
+  setModalText,
+  setModalInfoVisible,
+  setGameOver,
+}) => {
+  if (cards[pick] === oponentPick) {
+    setGameOver(true);
+
+    setModalGuessVisible(false);
+    if (p1orp2 === "p1") {
+      await updateDoc(docRef, { roomCode: 1 });
+    } else {
+      await updateDoc(docRef, { roomCode: 2 });
+    }
+
+    setModalTitle(strings[language].correctGuess);
+    setModalText(strings[language].correctGuessInfo);
+    setModalInfoVisible(true);
+  } else {
+    setModalGuessVisible(false);
+    if (p1orp2 === "p1") {
+      await updateDoc(docRef, { turn: "p2" });
+    } else {
+      await updateDoc(docRef, { turn: "p1" });
+    }
+
+    setModalTitle(strings[language].wrongGuess);
+    setModalText("");
+    setModalInfoVisible(true);
+  }
+};

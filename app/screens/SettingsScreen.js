@@ -11,12 +11,12 @@ import {
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-
-import { colors } from "../assets/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import DataContext from "../../DataContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
+
+import { colors } from "../assets/colors";
+import DataContext from "../../DataContext";
 import { strings } from "../assets/languages";
 
 const imageMap = {
@@ -24,6 +24,8 @@ const imageMap = {
   tr: require("../assets/locales/tr.png"),
   es: require("../assets/locales/es.png"),
   it: require("../assets/locales/it.png"),
+  fr: require("../assets/locales/fr.png"),
+  de: require("../assets/locales/de.png"),
 };
 
 const SettingsScreen = () => {
@@ -61,7 +63,12 @@ const SettingsScreen = () => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <LinearGradient
         style={styles.container}
-        colors={[colors.background1, colors.background2, colors.background3]}
+        colors={[
+          colors.background1,
+          colors.background2,
+          colors.background2,
+          colors.background1,
+        ]}
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
@@ -118,7 +125,7 @@ const SettingsScreen = () => {
                         ]}
                       >
                         <Image
-                          style={{ width: 62, height: 62, borderRadius: 10 }}
+                          style={{ width: 61, height: 61, borderRadius: 8 }}
                           source={imageMap[key]}
                         />
                       </View>
@@ -200,7 +207,9 @@ const styles = StyleSheet.create({
   languageArea: {
     width: 300,
     flexDirection: "row",
-    justifyContent: "space-between",
+    flexWrap: "wrap",
+    gap: 13,
+    justifyContent: "center",
   },
   languageBox: {
     backgroundColor: colors.secondary,
