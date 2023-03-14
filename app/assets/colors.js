@@ -1,15 +1,11 @@
 export const colors = {
-  primary: "#858e96",
-  secondary: "#a4c6b8",
-  third: "#E8EBF7",
+  primary: "#50808e",
+  secondary: "#dcd2ab",
+  third: "#FCFCFE",
+  fourth: "#69A297",
   white: "#fff",
   black: "#000",
   tint: "#222",
   halfBlack: "#00000080",
-
-  background1: "#858e96",
-  background2: "#60696b",
+  halfWhite: "#DCDCDC",
 };
-
-/* primary: "#3359A1",
-secondary: "#4895ef", */

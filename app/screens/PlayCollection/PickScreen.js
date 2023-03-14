@@ -4,6 +4,7 @@ import {
   BackHandler,
   FlatList,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,11 +12,12 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { LinearGradient } from "expo-linear-gradient";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import randomLock from "../../assets/randomLock.png";
+import lock from "../../assets/lock.png";
 
 import { strings } from "../../assets/languages";
 import DataContext from "../../../DataContext";
@@ -178,17 +180,7 @@ const PickScreen = ({ route, navigation }) => {
   }, [navigation, docData, opponentName, opponentPicked]);
 
   return (
-    <LinearGradient
-      style={styles.container}
-      colors={[
-        colors.background1,
-        colors.background2,
-        colors.background2,
-        colors.background1,
-      ]}
-      start={{ x: 1, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={styles.container}>
       {docData && urls ? (
         <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
           <FlatList
@@ -211,36 +203,48 @@ const PickScreen = ({ route, navigation }) => {
             contentContainerStyle={{ paddingBottom: 120, paddingTop: 10 }}
             keyExtractor={(index) => index.toString()}
           />
-          <View style={styles.buttonArea}>
+          <SafeAreaView style={styles.buttonArea}>
             {p1orp2 === "p1" && (
+              <View style={styles.buttonBox}>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    {
+                      backgroundColor: colors.secondary,
+                      borderRadius: 5,
+                      width: 30,
+                      height: 30,
+                    },
+                  ]}
+                  onPress={() => {
+                    if (turn === 2) {
+                      setTurn(0);
+                    } else {
+                      setTurn(turn + 1);
+                    }
+                  }}
+                >
+                  {turn === 0 ? (
+                    <FontAwesome
+                      name="random"
+                      size={20}
+                      color={colors.primary}
+                      style={{ marginTop: 3, marginLeft: 1 }}
+                    />
+                  ) : turn === 1 ? (
+                    <Text style={styles.turnText}>P1</Text>
+                  ) : (
+                    <Text style={styles.turnText}>P2</Text>
+                  )}
+                </TouchableOpacity>
+                <Text style={styles.buttonText}>
+                  {strings[language].firstTurn}
+                </Text>
+              </View>
+            )}
+            <View style={styles.buttonBox}>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => {
-                  if (turn === 2) {
-                    setTurn(0);
-                  } else {
-                    setTurn(turn + 1);
-                  }
-                }}
-                activeOpacity={0.8}
-              >
-                {turn === 0 ? (
-                  <FontAwesome
-                    name="random"
-                    size={30}
-                    color={colors.black}
-                    style={{ marginTop: 3, marginLeft: 1 }}
-                  />
-                ) : turn === 1 ? (
-                  <Text style={styles.turnText}>P1</Text>
-                ) : (
-                  <Text style={styles.turnText}>P2</Text>
-                )}
-              </TouchableOpacity>
-            )}
-            <View>
-              <TouchableOpacity
-                style={styles.confirmButton}
                 onPress={() => {
                   const randomPick = Math.floor(
                     Math.random() * docData.cards.length
@@ -257,20 +261,14 @@ const PickScreen = ({ route, navigation }) => {
                     setRandom: setRandom,
                   });
                 }}
-                activeOpacity={0.8}
               >
-                <Text
-                  style={{
-                    color: colors.black,
-                    fontSize: 25,
-                    fontFamily: "CentraBook",
-                  }}
-                >
-                  {strings[language].random}
-                </Text>
+                <Image source={randomLock} style={{ width: 25, height: 35 }} />
               </TouchableOpacity>
+              <Text style={styles.buttonText}>{strings[language].random}</Text>
+            </View>
+            <View style={styles.buttonBox}>
               <TouchableOpacity
-                style={styles.confirmButton}
+                style={styles.button}
                 onPress={() =>
                   handleLockIn({
                     docRef: docRef,
@@ -284,53 +282,46 @@ const PickScreen = ({ route, navigation }) => {
                     setRandom: setRandom,
                   })
                 }
-                activeOpacity={0.8}
               >
-                <Text
-                  style={{
-                    color: colors.black,
-                    fontSize: 25,
-                    fontFamily: "CentraBook",
-                  }}
-                >
-                  {strings[language].lockIn}
-                </Text>
+                <Image source={lock} style={{ width: 25, height: 35 }} />
               </TouchableOpacity>
+              <Text style={styles.buttonText}>{strings[language].lockIn}</Text>
             </View>
             {p1orp2 === "p1" && (
-              <TouchableOpacity
-                style={styles.button}
-                disabled={disbaleStart}
-                onPress={() =>
-                  handleStartGame({
-                    docRef: docRef,
-                    docData: docData,
-                    turn: turn,
-                    playerPick: playerPick,
-                    opponentPicked: opponentPicked,
-                    p1orp2: p1orp2,
-                    setDisableStart: setDisableStart,
-                    title: title,
-                    language: language,
-                    navigation: navigation,
-                  })
-                }
-                activeOpacity={0.8}
-              >
-                <FontAwesome
-                  name="arrow-right"
-                  size={30}
-                  color={colors.black}
-                  style={{ marginLeft: 4, marginBottom: 2 }}
-                />
-              </TouchableOpacity>
+              <View style={styles.buttonBox}>
+                <TouchableOpacity
+                  style={styles.button}
+                  disabled={disbaleStart}
+                  onPress={() =>
+                    handleStartGame({
+                      docRef: docRef,
+                      docData: docData,
+                      turn: turn,
+                      playerPick: playerPick,
+                      opponentPicked: opponentPicked,
+                      p1orp2: p1orp2,
+                      setDisableStart: setDisableStart,
+                      title: title,
+                      language: language,
+                      navigation: navigation,
+                    })
+                  }
+                >
+                  <FontAwesome
+                    name="arrow-right"
+                    size={30}
+                    color={colors.secondary}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.buttonText}>{strings[language].play}</Text>
+              </View>
             )}
-          </View>
+          </SafeAreaView>
         </View>
       ) : (
         <ActivityIndicator color={colors.white} size="large" />
       )}
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -341,18 +332,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: colors.third,
   },
   cards: {
     flex: 1,
     width: "100%",
   },
   cardBox: {
-    backgroundColor: colors.secondary,
-    width: 170,
+    backgroundColor: colors.primary,
+    width: 190,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 15,
+    borderRadius: 10,
     borderWidth: 3,
     borderColor: colors.black,
     marginVertical: 10,
@@ -364,53 +356,47 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
   },
   activeCard: {
-    borderColor: colors.white,
+    borderColor: colors.fourth,
   },
   pickedCard: {
     borderColor: "red",
   },
   cardBoxContent: {
     color: colors.black,
-    fontSize: 20,
     textAlign: "center",
     fontFamily: "CentraBook",
     position: "absolute",
   },
   buttonArea: {
+    backgroundColor: colors.primary,
+    width: "100%",
     flexDirection: "row",
     position: "absolute",
-    bottom: 30,
+    bottom: 0,
+    justifyContent: "space-evenly",
     alignItems: "flex-end",
   },
-  confirmButton: {
-    width: 150,
-    height: 40,
-    justifyContent: "center",
+  buttonBox: {
     alignItems: "center",
-    backgroundColor: colors.third,
-    borderRadius: 10,
-    borderWidth: 3,
-    borderColor: colors.black,
-    marginHorizontal: 10,
-    marginTop: 5,
   },
   button: {
-    backgroundColor: colors.third,
-    width: 60,
-    height: 85,
+    width: 35,
+    height: 35,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
-    borderWidth: 3,
-    borderColor: colors.black,
+    marginTop: 10,
+  },
+  buttonText: {
+    marginTop: 4,
+    fontSize: 10,
+    color: colors.secondary,
   },
   turnText: {
-    color: colors.black,
-    fontSize: 30,
+    color: colors.primary,
+    fontSize: 20,
     fontFamily: "CentraBold",
     textAlign: "center",
   },
-  startButton: {},
 });
 
 const Item = ({
@@ -438,17 +424,20 @@ const Item = ({
     >
       <Image
         source={{ uri: url }}
-        style={{ width: 165, height: 165, borderRadius: 13 }}
+        style={{ width: 184, height: 184, borderRadius: 6 }}
       />
       <Text
         style={[
           styles.cardBoxContent,
-          originals && {
-            bottom: 10,
-            color: colors.white,
-            backgroundColor: "#000000b0",
-            width: 170,
-          },
+          originals
+            ? {
+                bottom: 5,
+                color: colors.white,
+                backgroundColor: "#000000b0",
+                width: 190,
+                fontSize: 15,
+              }
+            : { fontSize: 20 },
         ]}
       >
         {card}

@@ -20,7 +20,6 @@ import React, {
   useState,
 } from "react";
 import { deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { LinearGradient } from "expo-linear-gradient";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -35,7 +34,7 @@ const GameScreen = ({ route, navigation }) => {
   const { title, docRef, p1orp2, pick, cardSize } = route.params;
   const [docData, setDocData] = useState();
   const [turn, setTurn] = useState();
-  const [turnCount, setTurnCount] = useState(-1);
+  const [turnCount, setTurnCount] = useState(0);
   const [modalInfoVisible, setModalInfoVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState();
   const [modalText, setModalText] = useState();
@@ -165,17 +164,7 @@ const GameScreen = ({ route, navigation }) => {
   }, [turn, turnCount]);
 
   return (
-    <LinearGradient
-      style={styles.container}
-      colors={[
-        colors.background1,
-        colors.background2,
-        colors.background2,
-        colors.background1,
-      ]}
-      start={{ x: 1, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={styles.container}>
       {docData && urls ? (
         <View style={styles.container}>
           <FlatList
@@ -197,65 +186,51 @@ const GameScreen = ({ route, navigation }) => {
             keyExtractor={(index) => index.toString()}
           />
           <View style={styles.buttonArea}>
-            <View
-              style={{
-                width: 170,
-                alignItems: "center",
-                justifyContent: "center",
+            <TouchableOpacity
+              style={[
+                styles.buttonBox,
+                username !== turn && {
+                  backgroundColor: "grey",
+                  opacity: 0.9,
+                },
+              ]}
+              onPress={() => {
+                setModalGuessVisible(!modalGuessVisible);
+                setGuessIndex(-1);
               }}
+              disabled={username !== turn}
+              activeOpacity={0.8}
             >
-              <TouchableOpacity
-                style={[
-                  styles.buttonBox,
-                  username !== turn && {
-                    backgroundColor: "grey",
-                    opacity: 0.9,
-                  },
-                ]}
-                onPress={() => {
-                  setModalGuessVisible(!modalGuessVisible);
-                  setGuessIndex(-1);
-                }}
-                disabled={username !== turn}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.buttonContent}>
-                  {strings[language].guess}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                width: 170,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.buttonBox,
-                  username !== turn && {
-                    backgroundColor: "grey",
-                    opacity: 0.9,
-                  },
-                ]}
-                onPress={async () => {
-                  if (docData.turn === p1orp2) {
-                    if (p1orp2 === "p1") {
-                      await updateDoc(docRef, { turn: "p2" });
-                    } else {
-                      await updateDoc(docRef, { turn: "p1" });
-                    }
+              <Text style={styles.buttonContent}>
+                {strings[language].guess}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.buttonBox,
+                { backgroundColor: "#d00" },
+                username !== turn && {
+                  backgroundColor: "grey",
+                  opacity: 0.9,
+                },
+              ]}
+              onPress={async () => {
+                if (docData.turn === p1orp2) {
+                  if (p1orp2 === "p1") {
+                    await updateDoc(docRef, { turn: "p2" });
+                  } else {
+                    await updateDoc(docRef, { turn: "p1" });
                   }
-                }}
-                disabled={username !== turn}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.buttonContent}>
-                  {strings[language].endTurn}
-                </Text>
-              </TouchableOpacity>
-            </View>
+                }
+              }}
+              disabled={username !== turn}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonContent}>
+                {strings[language].endTurn}
+              </Text>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity
             style={styles.exitButton}
@@ -295,15 +270,11 @@ const GameScreen = ({ route, navigation }) => {
                 <Text style={styles.guessInfo}>
                   {strings[language].guessInfo}
                 </Text>
-                <ScrollView>
+                <ScrollView contentContainerStyle={{ gap: 10 }}>
                   {(() => {
                     const elements = [];
                     for (let index = 0; index < docData.cards.length; index++) {
                       if (!markedCards[index]) {
-                        if (index !== 0)
-                          elements.push(
-                            <View key={index - 100} style={styles.seperator} />
-                          );
                         elements.push(
                           <TouchableOpacity
                             key={index}
@@ -312,15 +283,21 @@ const GameScreen = ({ route, navigation }) => {
                             }}
                             activeOpacity={0.5}
                           >
-                            <View
-                              style={[
-                                styles.guessBox,
-                                guessIndex === index && styles.activeGuessBox,
-                              ]}
-                            >
+                            <View style={styles.guessBox}>
                               <Text style={styles.guessBoxContent}>
                                 {docData.cards[index]}
                               </Text>
+                              {guessIndex === index && (
+                                <Ionicons
+                                  name="checkmark-circle-sharp"
+                                  size={35}
+                                  color={colors.primary}
+                                  style={{
+                                    position: "absolute",
+                                    right: 10,
+                                  }}
+                                />
+                              )}
                             </View>
                           </TouchableOpacity>
                         );
@@ -406,7 +383,7 @@ const GameScreen = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -414,7 +391,7 @@ export default GameScreen;
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: colors.tint,
+    backgroundColor: colors.primary,
     flexDirection: "row",
     paddingVertical: 10,
   },
@@ -426,6 +403,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: colors.white,
     fontFamily: "CentraBold",
+    fontSize: 15,
   },
   headerLabel: {
     color: colors.white,
@@ -459,6 +437,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalText: {
+    marginTop: 10,
     fontFamily: "CentraBook",
     fontSize: 20,
     textAlign: "center",
@@ -468,18 +447,19 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: colors.third,
   },
   cards: {
     flex: 1,
     width: "100%",
   },
   cardBox: {
-    backgroundColor: colors.secondary,
-    width: 170,
+    backgroundColor: colors.primary,
+    width: 190,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 15,
+    borderRadius: 10,
     borderWidth: 3,
     borderColor: colors.black,
     marginVertical: 10,
@@ -492,7 +472,6 @@ const styles = StyleSheet.create({
   },
   cardBoxContent: {
     color: colors.black,
-    fontSize: 20,
     textAlign: "center",
     fontFamily: "CentraBook",
     position: "absolute",
@@ -509,23 +488,20 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     flexDirection: "row",
     justifyContent: "space-evenly",
-    backgroundColor: colors.halfBlack,
-    borderColor: colors.black,
-    borderTopWidth: 2,
+    backgroundColor: "#50808ea0",
   },
   buttonBox: {
-    width: 150,
-    height: 60,
-    backgroundColor: colors.third,
+    width: 140,
+    height: 50,
+    backgroundColor: colors.secondary,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
-    borderWidth: 3,
-    borderColor: colors.black,
+    borderRadius: 8,
   },
   buttonContent: {
-    fontSize: 20,
+    fontSize: 17,
     fontFamily: "CentraMedium",
+    color: colors.white,
   },
   exitButton: {
     backgroundColor: colors.third,
@@ -553,38 +529,32 @@ const styles = StyleSheet.create({
   guessInfo: {
     textAlign: "center",
     paddingHorizontal: 50,
-    marginBottom: 10,
+    marginBottom: 20,
     fontFamily: "CentraBook",
   },
   guessBox: {
-    alignItems: "center",
-    padding: 15,
-    marginHorizontal: "10%",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  activeGuessBox: {
-    backgroundColor: colors.secondary,
-    borderColor: colors.tint,
+    backgroundColor: colors.white,
+    alignItems: "flex-start",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginHorizontal: "7%",
+    borderRadius: 30,
+    justifyContent: "center",
+
+    shadowColor: colors.black,
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 5 },
   },
   guessBoxContent: {
-    fontSize: 22,
+    fontSize: 17,
     fontFamily: "CentraBook",
     textAlign: "center",
   },
-  seperator: {
-    height: 1,
-    backgroundColor: colors.black,
-    marginHorizontal: "15%",
-    marginVertical: 7,
-  },
   guessButton: {
-    borderWidth: 2,
-    borderColor: colors.tint,
     borderRadius: 10,
-    paddingVertical: 10,
-    marginHorizontal: "20%",
+    paddingVertical: 12,
+    marginHorizontal: "17%",
     marginTop: 10,
     backgroundColor: colors.primary,
   },
@@ -592,6 +562,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "CentraMedium",
     textAlign: "center",
+    color: colors.white,
   },
 });
 
@@ -607,17 +578,20 @@ const Item = ({ card, index, markedCards, setMarkedCards, url, originals }) => (
     <View style={[styles.cardBox, markedCards[index] && styles.marked]}>
       <Image
         source={{ uri: url }}
-        style={{ width: 165, height: 165, borderRadius: 13 }}
+        style={{ width: 184, height: 184, borderRadius: 6 }}
       />
       <Text
         style={[
           styles.cardBoxContent,
-          originals && {
-            bottom: 10,
-            color: colors.white,
-            backgroundColor: "#000000b0",
-            width: 170,
-          },
+          originals
+            ? {
+                bottom: 5,
+                color: colors.white,
+                backgroundColor: "#000000b0",
+                width: 190,
+                fontSize: 15,
+              }
+            : { fontSize: 20 },
         ]}
       >
         {card}

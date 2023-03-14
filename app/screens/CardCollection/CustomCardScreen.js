@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import React, { useContext, useState } from "react";
 
-import Foundation from "react-native-vector-icons/Foundation";
-import Fontisto from "react-native-vector-icons/Fontisto";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
@@ -115,8 +115,6 @@ const CustomCardScreen = ({ navigation }) => {
       cards: filteredCrads,
       title: filteredTitle,
     });
-
-    console.log(customCardsArray);
   };
 
   return (
@@ -198,14 +196,19 @@ const CustomCardScreen = ({ navigation }) => {
           }}
           activeOpacity={0.8}
         >
-          <Foundation name="minus" size={30} color={colors.black} />
+          <AntDesign name="minuscircleo" size={35} color={colors.third} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
           activeOpacity={0.8}
         >
-          <Fontisto name="save" size={37} color={colors.black} />
+          <Ionicons
+            name="save-sharp"
+            size={40}
+            color={colors.third}
+            style={{ left: 1 }}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.plusButton]}
@@ -216,7 +219,12 @@ const CustomCardScreen = ({ navigation }) => {
           }}
           activeOpacity={0.8}
         >
-          <Foundation name="plus" size={35} color={colors.black} />
+          <AntDesign
+            name="pluscircleo"
+            size={35}
+            color={colors.third}
+            style={{ left: 1 }}
+          />
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -227,53 +235,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    backgroundColor: colors.primary,
+    backgroundColor: colors.third,
   },
   titleInput: {
-    width: 200,
+    width: "85%",
     marginVertical: 20,
     textAlign: "center",
     fontSize: 20,
     fontWeight: "500",
   },
   fieldsContainer: {
-    width: "90%",
+    width: "85%",
     flexDirection: "row",
+    justifyContent: "space-between",
   },
   fieldColumn: {
-    width: "50%",
+    width: "47%",
     alignItems: "center",
   },
   input: {
-    backgroundColor: colors.secondary,
-    width: 170,
+    backgroundColor: colors.white,
+    width: "100%",
     height: 50,
     marginVertical: 5,
-    borderRadius: 10,
+    borderRadius: 3,
     paddingHorizontal: 10,
     fontSize: 17,
-    borderWidth: 2,
-    borderColor: colors.black,
+    borderWidth: 1,
+    borderColor: colors.halfWhite,
     fontFamily: "CentraBook",
   },
   buttonArea: {
     position: "absolute",
     bottom: 40,
-    width: "60%",
+    width: "70%",
     flexDirection: "row",
     marginTop: 20,
-    marginHorizontal: "20%",
+    marginHorizontal: "15%",
     justifyContent: "space-evenly",
   },
   button: {
     width: 100,
     height: 60,
-    borderWidth: 3,
-    borderRadius: 10,
-    borderColor: colors.black,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.third,
+    backgroundColor: colors.primary,
   },
   minuesButton: { width: 60 },
   plusButton: { width: 60 },

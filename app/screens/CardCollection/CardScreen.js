@@ -23,17 +23,20 @@ const Item = ({ card, url, originals }) => {
     <View style={styles.cardBox}>
       <Image
         source={{ uri: url }}
-        style={{ width: 165, height: 165, borderRadius: 13 }}
+        style={{ width: 184, height: 184, borderRadius: 6 }}
       />
       <Text
         style={[
           styles.cardBoxContent,
-          originals && {
-            bottom: 10,
-            color: colors.white,
-            backgroundColor: "#000000b0",
-            width: 170,
-          },
+          originals
+            ? {
+                bottom: 5,
+                color: colors.white,
+                backgroundColor: "#000000b0",
+                width: 190,
+                fontSize: 15,
+              }
+            : { fontSize: 20 },
         ]}
       >
         {card}
@@ -114,15 +117,15 @@ const CardScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   cards: {
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.third,
   },
   cardBox: {
-    backgroundColor: colors.secondary,
-    width: 170,
+    backgroundColor: colors.primary,
+    width: 190,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 15,
+    borderRadius: 10,
     borderWidth: 3,
     borderColor: colors.black,
     marginVertical: 10,
@@ -135,7 +138,6 @@ const styles = StyleSheet.create({
   },
   cardBoxContent: {
     color: colors.black,
-    fontSize: 20,
     textAlign: "center",
     fontFamily: "CentraBook",
     position: "absolute",

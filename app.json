@@ -2,6 +2,7 @@
   "expo": {
     "name": "Guess-Who",
     "slug": "Guess-Who",
+    "owner": "guess-who",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "",

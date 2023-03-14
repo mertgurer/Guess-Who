@@ -2,15 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  Image,
-  Modal,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StatusBar, Text, TouchableOpacity } from "react-native";
 import * as Localization from "expo-localization";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
@@ -19,11 +11,8 @@ LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
 ]);
 
-import Octicons from "react-native-vector-icons/Octicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 
-import logo from "./app/assets/logo.png";
 import { colors } from "./app/assets/colors";
 import { DataContext } from "./DataContext";
 import CardCategoriesScreen from "./app/screens/CardCollection/CardCategoriesScreen";
@@ -122,20 +111,15 @@ export default function App() {
             screenOptions={{
               headerTitleStyle: { fontFamily: "CentraMedium", fontSize: 22 },
               headerTintColor: colors.white,
-              headerStyle: { backgroundColor: colors.tint },
-              headerBackTitle: ` `,
-              orientation: "portrait",
+              headerStyle: { backgroundColor: colors.primary },
+              headerShadowVisible: false,
             }}
           >
             <Stack.Screen
               name="Home"
               component={HomeScreen}
               options={{
-                title: "",
-                headerShown: true,
-                headerTransparent: true,
-                headerStyle: { backgroundColor: "transparent" },
-                headerRight: () => <HeaderRightComponent language={language} />,
+                headerShown: false,
               }}
             />
             <Stack.Screen
@@ -146,24 +130,37 @@ export default function App() {
             <Stack.Screen
               name="Settings"
               component={SettingsScreen}
-              options={{
+              options={({ navigation }) => ({
                 title: strings[language].settings,
-                animation: "fade_from_bottom",
-                gestureEnabled: false,
-              }}
+                headerStyle: { backgroundColor: colors.third },
+                headerTintColor: colors.black,
+                headerLeft: () => BackButton({ navigation }),
+              })}
             />
             <Stack.Screen
               name="CardCategories"
               component={CardCategoriesScreen}
               options={({ navigation }) => ({
                 title: strings[language].categories,
-                animation: "fade_from_bottom",
-                gestureEnabled: false,
+                headerLeft: () => BackButton({ navigation }),
                 headerRight: () => (
                   <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.white,
+                      width: 32,
+                      aspectRatio: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 16,
+                    }}
                     onPress={() => navigation.push("CustomCard")}
                   >
-                    <Octicons name="plus" size={30} color={colors.white} />
+                    <Feather
+                      name="plus"
+                      size={24}
+                      color={colors.black}
+                      style={{ left: 1 }}
+                    />
                   </TouchableOpacity>
                 ),
               })}
@@ -172,7 +169,10 @@ export default function App() {
             <Stack.Screen
               name="Cards"
               component={CardScreen}
-              options={({ route }) => ({ title: route.params.title })}
+              options={({ route, navigation }) => ({
+                title: route.params.title,
+                headerLeft: () => BackButton({ navigation }),
+              })}
             />
             <Stack.Screen
               name="CustomCard"
@@ -205,88 +205,26 @@ export default function App() {
   }
 }
 
-const HeaderRightComponent = ({ language }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
+const BackButton = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <AntDesign name="questioncircle" size={30} color={colors.black} />
-      </TouchableOpacity>
-      <Modal
-        visible={modalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.modalFrame}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>{strings[language].howToPlay}</Text>
-            <Text style={styles.modalText}>
-              {strings[language].howToPlayInfo}
-            </Text>
-            <View style={styles.logo}>
-              <Image style={{ width: 80, height: 45 }} source={logo} />
-            </View>
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Ionicons name="close" size={30} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </View>
+    <TouchableOpacity
+      style={{
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: colors.white,
+        width: 32,
+        aspectRatio: 1,
+        borderRadius: 16,
+      }}
+      onPress={() => navigation.goBack()}
+    >
+      <Feather
+        name={"chevron-left"}
+        size={33}
+        color={colors.black}
+        style={{ right: 1 }}
+      />
+    </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    right: -10,
-  },
-  modalFrame: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modal: {
-    width: "75%",
-    borderRadius: 20,
-    borderWidth: 5,
-    borderColor: colors.tint,
-    backgroundColor: colors.third,
-    paddingTop: 40,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-    alignItems: "center",
-  },
-  modalCloseButton: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-    padding: 5,
-  },
-  modalTitle: {
-    fontFamily: "CentraBold",
-    fontSize: 30,
-    textAlign: "center",
-  },
-  modalText: {
-    fontFamily: "CentraBook",
-    fontSize: 15,
-    textAlign: "center",
-    lineHeight: 22,
-    marginTop: 10,
-  },
-  logo: {
-    marginTop: 20,
-    width: 80,
-    height: 45,
-    backgroundColor: colors.primary,
-  },
-});

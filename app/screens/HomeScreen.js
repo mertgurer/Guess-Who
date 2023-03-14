@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -6,14 +6,18 @@ import {
   Dimensions,
   Image,
   Text,
+  Modal,
+  SafeAreaView,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Octicons from "react-native-vector-icons/Octicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { colors } from "../assets/colors";
-import logo from "../assets/gameLogo.png";
+import gameLogo from "../assets/gameLogo.png";
+import logo from "../assets/logo.png";
 import { strings } from "../assets/languages";
 import DataContext from "../../DataContext";
 
@@ -23,20 +27,14 @@ const HomeScreen = ({ navigation }) => {
   const { language } = useContext(DataContext);
 
   return (
-    <LinearGradient
-      style={styles.home}
-      colors={[
-        colors.background1,
-        colors.background2,
-        colors.background2,
-        colors.background1,
-      ]}
-      start={{ x: 1, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={styles.home}>
       <View style={styles.logoArea}>
         <View style={styles.logo}>
-          <Image style={styles.logoImage} source={logo} resizeMode="contain" />
+          <Image
+            style={styles.logoImage}
+            source={gameLogo}
+            resizeMode="contain"
+          />
         </View>
       </View>
       <View style={styles.buttonArea}>
@@ -47,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
             activeOpacity={0.8}
             onPress={() => navigation.push("Play")}
           >
-            <Octicons name="play" size={55} color={colors.black} />
+            <Octicons name="play" size={55} color={colors.white} />
           </TouchableOpacity>
           {/* === cards button === */}
           <TouchableOpacity
@@ -58,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
             <MaterialCommunityIcons
               name="cards"
               size={60}
-              color={colors.black}
+              color={colors.white}
             />
           </TouchableOpacity>
         </View>
@@ -68,7 +66,7 @@ const HomeScreen = ({ navigation }) => {
           activeOpacity={0.8}
           onPress={() => navigation.push("Settings")}
         >
-          <Octicons name="gear" size={50} color={colors.black} />
+          <Octicons name="gear" size={50} color={colors.white} />
         </TouchableOpacity>
       </View>
       <View style={styles.watermark}>
@@ -79,7 +77,46 @@ const HomeScreen = ({ navigation }) => {
           Mert Gürer
         </Text>
       </View>
-    </LinearGradient>
+      <HeaderRightComponent language={language} />
+    </View>
+  );
+};
+
+const HeaderRightComponent = ({ language }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  return (
+    <SafeAreaView style={styles.infoContainer}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <AntDesign name="questioncircle" size={30} color={colors.black} />
+      </TouchableOpacity>
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalFrame}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>{strings[language].howToPlay}</Text>
+            <Text style={styles.modalText}>
+              {strings[language].howToPlayInfo}
+            </Text>
+            <View style={styles.infoLogo}>
+              <Image style={{ width: 80, height: 45 }} source={logo} />
+            </View>
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Ionicons name="close" size={30} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
 };
 
@@ -87,6 +124,7 @@ const styles = StyleSheet.create({
   home: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: colors.primary,
   },
   logoArea: {
     flex: 6,
@@ -119,8 +157,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
-    borderWidth: 3,
-    borderColor: colors.black,
 
     shadowColor: colors.black,
     shadowOpacity: 0.5,
@@ -136,6 +172,51 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     alignItems: "center",
+  },
+  infoContainer: {
+    position: "absolute",
+    right: 15,
+  },
+  modalFrame: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modal: {
+    width: "75%",
+    borderRadius: 20,
+    borderWidth: 5,
+    borderColor: colors.tint,
+    backgroundColor: colors.third,
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  modalCloseButton: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+    padding: 5,
+  },
+  modalTitle: {
+    fontFamily: "CentraBold",
+    fontSize: 30,
+    textAlign: "center",
+  },
+  modalText: {
+    fontFamily: "CentraBook",
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 22,
+    marginTop: 10,
+  },
+  infoLogo: {
+    marginTop: 20,
+    width: 80,
+    height: 45,
+    backgroundColor: colors.primary,
   },
 });
 

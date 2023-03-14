@@ -10,10 +10,7 @@ import {
   Image,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { colors } from "../assets/colors";
 import DataContext from "../../DataContext";
@@ -32,8 +29,9 @@ const SettingsScreen = () => {
   const { username, setUsername, setCustomCardsArray, language, setLanguage } =
     useContext(DataContext);
   const [input, setInput] = useState(username);
+  const [languageIndex, setLanguageIndex] = useState(language);
 
-  const submitUsername = async () => {
+  const saveSettings = async () => {
     filteredInput = input.trim();
 
     try {
@@ -41,12 +39,7 @@ const SettingsScreen = () => {
         setUsername(filteredInput);
         await AsyncStorage.setItem("username", filteredInput);
         successAlert({ newUsername: filteredInput, language: language });
-      } else if (filteredInput === username) {
-        failAlert({
-          message: strings[language].sameUsername,
-          language: language,
-        });
-      } else {
+      } else if (filteredInput.length === 0) {
         failAlert({
           message: strings[language].emptyUsername,
           language: language,
@@ -57,21 +50,18 @@ const SettingsScreen = () => {
     }
 
     setInput(filteredInput);
+
+    setLanguage(languageIndex);
+    try {
+      await AsyncStorage.setItem("language", languageIndex);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <LinearGradient
-        style={styles.container}
-        colors={[
-          colors.background1,
-          colors.background2,
-          colors.background2,
-          colors.background1,
-        ]}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
+      <View style={styles.container}>
         <View style={styles.settings}>
           <View>
             <Text style={styles.infoText}>{strings[language].username}</Text>
@@ -82,18 +72,9 @@ const SettingsScreen = () => {
                 value={input}
                 placeholder={strings[language].usernamePlaceholder}
               />
-              <TouchableOpacity onPress={submitUsername} activeOpacity={0.8}>
-                <View style={styles.saveButton}>
-                  <Ionicons
-                    name="checkmark-sharp"
-                    size={50}
-                    color={colors.black}
-                  />
-                </View>
-              </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.languageZone}>
+          <View>
             <Text style={[styles.infoText, { paddingBottom: 15 }]}>
               {strings[language].languages}
             </Text>
@@ -106,12 +87,7 @@ const SettingsScreen = () => {
                     <TouchableOpacity
                       key={key}
                       onPress={async () => {
-                        setLanguage(key);
-                        try {
-                          await AsyncStorage.setItem("language", key);
-                        } catch (e) {
-                          console.log(e);
-                        }
+                        setLanguageIndex(key);
                       }}
                       activeOpacity={0.8}
                     >
@@ -120,12 +96,14 @@ const SettingsScreen = () => {
                           styles.languageBox,
                           {
                             borderColor:
-                              language === key ? colors.white : colors.black,
+                              languageIndex === key
+                                ? colors.black
+                                : colors.white,
                           },
                         ]}
                       >
                         <Image
-                          style={{ width: 61, height: 61, borderRadius: 8 }}
+                          style={{ width: 59, height: 59, borderRadius: 7 }}
                           source={imageMap[key]}
                         />
                       </View>
@@ -138,23 +116,45 @@ const SettingsScreen = () => {
             </View>
           </View>
         </View>
-        <TouchableOpacity
-          style={{ justifyContent: "center" }}
-          onPress={() =>
-            deleteAlert({
-              setCustomCardsArray: setCustomCardsArray,
-              language: language,
-            })
-          }
-          activeOpacity={0.8}
-        >
-          <View style={styles.clearCustomCards}>
-            <Text style={{ fontFamily: "CentraBold", fontSize: 15 }}>
-              {strings[language].deleteInfo}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </LinearGradient>
+        <View style={styles.buttonZone}>
+          <TouchableOpacity onPress={saveSettings} activeOpacity={0.8}>
+            <View style={styles.saveButton}>
+              <Text
+                style={{
+                  fontFamily: "CentraBold",
+                  fontSize: 22,
+                  color: colors.third,
+                }}
+              >
+                {strings[language].save}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ justifyContent: "center" }}
+            onPress={() =>
+              deleteAlert({
+                setCustomCardsArray: setCustomCardsArray,
+                language: language,
+              })
+            }
+            activeOpacity={0.8}
+          >
+            <View>
+              <Text
+                style={{
+                  fontFamily: "CentraBook",
+                  fontSize: 15,
+                  color: colors.black,
+                  opacity: 0.3,
+                }}
+              >
+                {strings[language].deleteInfo}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -163,46 +163,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "space-evenly",
+    backgroundColor: colors.third,
   },
   settings: {
+    flex: 2,
     justifyContent: "center",
     alignItems: "center",
+    gap: 20,
   },
   infoText: {
     fontSize: 20,
     padding: 5,
-    color: colors.white,
+    color: colors.black,
     fontFamily: "CentraMedium",
   },
   usernameZone: {
     flexDirection: "row",
   },
   input: {
-    backgroundColor: colors.secondary,
-    width: 230,
+    width: 300,
     padding: 10,
-    borderWidth: 2,
-    borderColor: colors.black,
-    borderBottomLeftRadius: 10,
-    borderTopLeftRadius: 10,
+    paddingLeft: 15,
+    borderWidth: 1,
+    borderColor: colors.halfWhite,
+    backgroundColor: colors.white,
+    borderRadius: 3,
     fontSize: 17,
     fontFamily: "CentraBook",
-  },
-  saveButton: {
-    width: 70,
-    height: 60,
-    backgroundColor: colors.third,
-    borderWidth: 2,
-    borderColor: colors.black,
-    justifyContent: "center",
-    alignItems: "center",
-    borderLeftWidth: 0,
-    borderBottomRightRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  languageZone: {
-    marginTop: 30,
   },
   languageArea: {
     width: 300,
@@ -217,18 +204,21 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 2,
+    borderWidth: 3,
     borderRadius: 10,
   },
-  clearCustomCards: {
-    width: 240,
-    height: 60,
-    backgroundColor: colors.third,
+  buttonZone: {
+    flex: 1,
+    alignItems: "center",
+    gap: 30,
+  },
+  saveButton: {
+    width: 220,
+    height: 55,
+    backgroundColor: colors.primary,
+    borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: colors.black,
-    borderRadius: 10,
   },
 });
 

@@ -23,20 +23,17 @@ const StartScreen = ({ navigation }) => {
         headerTintColor: colors.white,
         headerTitleStyle: { fontFamily: "CentraMedium", fontSize: 22 },
         headerStyle: {
-          backgroundColor: colors.tint,
-          borderWidth: 10,
-          borderColor: colors.tint,
-          borderBottomColor: colors.tint,
+          backgroundColor: colors.primary,
         },
         tabBarStyle: {
           borderTopWidth: 0,
-          backgroundColor: colors.tint,
+          backgroundColor: colors.primary,
           height: Platform.OS === "ios" ? 90 : 70,
           ...(Platform.OS === "android" && { paddingBottom: 10 }),
         },
         tabBarLabelStyle: { fontFamily: "CentraMedium", fontSize: 12 },
         tabBarActiveTintColor: colors.white,
-        tabBarInactiveTintColor: "gray",
+        tabBarInactiveTintColor: colors.halfBlack,
         headerLeft: () =>
           BackButton({ navigation: navigation, language: language }),
         tabBarIcon: ({ focused, color, size }) => {
@@ -82,17 +79,6 @@ const BackButton = ({ navigation, language }) => {
       onPress={() => navigation.navigate("Home")}
     >
       <Feather name={"chevron-left"} size={33} color={colors.white} />
-      {Platform.OS === "ios" && (
-        <Text
-          style={{
-            color: colors.white,
-            fontSize: 18,
-            fontFamily: "CentraBook",
-          }}
-        >
-          {strings[language].back}
-        </Text>
-      )}
     </TouchableOpacity>
   );
 };

@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Modal,
+  FlatList,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   addDoc,
   collection,
@@ -26,6 +25,53 @@ import DataContext from "../../../DataContext";
 import { colors } from "../../assets/colors";
 import { db, getCategoriesData } from "../../../firebase";
 
+const Item = ({
+  item,
+  index,
+  language,
+  setRoomCode,
+  categoryData,
+  username,
+  setModalVisible,
+  navigation,
+  setCategoryIndex,
+}) => {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  return (
+    <View style={styles.categoryBox}>
+      <Text style={styles.categoryBoxContent}>{item.title}</Text>
+      <View style={styles.createRoomField}>
+        <TouchableOpacity
+          disabled={buttonDisabled}
+          onPress={async () => {
+            setButtonDisabled(true);
+            setCategoryIndex(index);
+
+            uniqueRoomCode = await generateRoomCode();
+            setRoomCode(uniqueRoomCode);
+
+            createRoom({
+              cards: categoryData[index],
+              username: username,
+              roomCode: uniqueRoomCode,
+              setModalVisible: setModalVisible,
+              setButtonDisabled: setButtonDisabled,
+              id: categoryData[index].id,
+              navigation: navigation,
+            });
+          }}
+          activeOpacity={0.5}
+        >
+          <Text style={styles.createRoomText}>
+            {strings[language].createRoom}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 const CreateGameScreen = ({ navigation }) => {
   const {
     categoryData,
@@ -37,7 +83,6 @@ const CreateGameScreen = ({ navigation }) => {
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [roomCode, setRoomCode] = useState();
-  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const fetchCategoriesData = async () => {
     if (customCardsArray) {
@@ -52,21 +97,7 @@ const CreateGameScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <LinearGradient
-      style={styles.container}
-      colors={[
-        colors.background1,
-        colors.background2,
-        colors.background2,
-        colors.background1,
-      ]}
-      start={{ x: 1, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
-      <View style={styles.header}>
-        <Text style={styles.headerText}>{strings[language].categories}</Text>
-      </View>
-
+    <View style={styles.container}>
       {categoryData === undefined ? (
         <ActivityIndicator
           style={styles.categoryList}
@@ -74,77 +105,32 @@ const CreateGameScreen = ({ navigation }) => {
           size="large"
         />
       ) : (
-        <ScrollView
-          style={styles.categoryList}
-          contentContainerStyle={{ paddingVertical: 10 }}
-        >
-          {(() => {
-            const elements = [];
-            for (let index = 0; index < categoryData.length; index++) {
-              elements.push(
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setCategoryIndex(index)}
-                  activeOpacity={0.5}
-                >
-                  <View
-                    style={[
-                      styles.itemBox,
-                      index === categoryIndex && styles.activeItemBox,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.itemBoxContent,
-                        {
-                          color:
-                            index !== categoryIndex
-                              ? colors.white
-                              : colors.black,
-                        },
-                      ]}
-                    >
-                      {categoryData[index].title}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-              if (index + 1 !== categoryData.length)
-                elements.push(
-                  <View key={index - 100} style={styles.seperator} />
-                );
-            }
-            return elements;
-          })()}
-        </ScrollView>
+        <FlatList
+          style={styles.cardCategories}
+          data={categoryData}
+          renderItem={({ item, index }) => (
+            <Item
+              item={item}
+              index={index}
+              language={language}
+              setRoomCode={setRoomCode}
+              categoryData={categoryData}
+              username={username}
+              setModalVisible={setModalVisible}
+              navigation={navigation}
+              setCategoryIndex={setCategoryIndex}
+            />
+          )}
+          contentContainerStyle={{
+            paddingBottom: 30,
+            paddingTop: 20,
+            paddingHorizontal: 10,
+            gap: 10,
+          }}
+          keyExtractor={(item) => item.id.toString()}
+        />
       )}
 
-      <TouchableOpacity
-        disabled={buttonDisabled}
-        onPress={async () => {
-          setButtonDisabled(true);
-
-          uniqueRoomCode = await generateRoomCode();
-          setRoomCode(uniqueRoomCode);
-
-          createRoom({
-            cards: categoryData[categoryIndex],
-            username: username,
-            roomCode: uniqueRoomCode,
-            setModalVisible: setModalVisible,
-            setButtonDisabled: setButtonDisabled,
-            id: categoryData[categoryIndex].id,
-            navigation: navigation,
-          });
-        }}
-        activeOpacity={0.8}
-      >
-        <View style={styles.createButton}>
-          <Text style={styles.createButtonText}>
-            {strings[language].createRoom}
-          </Text>
-        </View>
-      </TouchableOpacity>
       {roomCode !== undefined && (
         <Modal
           visible={modalVisible}
@@ -191,6 +177,7 @@ const CreateGameScreen = ({ navigation }) => {
                   fontSize: 13,
                   textAlign: "center",
                   fontFamily: "CentraBook",
+                  color: colors.primary,
                 }}
               >
                 {strings[language].createStatus}
@@ -199,7 +186,7 @@ const CreateGameScreen = ({ navigation }) => {
           </View>
         </Modal>
       )}
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -207,71 +194,41 @@ export default CreateGameScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 30,
-  },
-  header: {
-    width: 200,
-    height: 60,
     backgroundColor: colors.third,
-    borderRadius: 10,
-    borderWidth: 3,
+    flex: 1,
+  },
+  categoryBox: {
+    backgroundColor: colors.fourth,
+    height: 120,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+    borderRadius: 15,
+    marginHorizontal: 5,
+
+    shadowColor: colors.black,
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 5 },
   },
-  headerText: {
-    fontSize: 25,
-    fontFamily: "CentraBook",
-  },
-  categoryList: {
-    flex: 1,
-    backgroundColor: colors.primary,
-    width: "80%",
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: colors.black,
-  },
-  itemBox: {
-    width: "80%",
-    alignItems: "center",
-    padding: 15,
-    marginHorizontal: "10%",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  activeItemBox: {
-    backgroundColor: colors.secondary,
-    borderColor: colors.tint,
-  },
-  itemBoxContent: {
-    fontSize: 22,
-    fontFamily: "CentraBook",
-    textAlign: "center",
-  },
-  seperator: {
-    height: 1,
-    backgroundColor: colors.black,
-    marginHorizontal: "15%",
-    marginVertical: 7,
-  },
-  createButton: {
-    width: 150,
-    height: 50,
-    backgroundColor: colors.third,
-    borderRadius: 10,
-    borderWidth: 3,
-    borderColor: colors.black,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  createButtonText: {
+  categoryBoxContent: {
+    color: colors.white,
     fontSize: 20,
-    fontFamily: "CentraBook",
     textAlign: "center",
+    fontFamily: "CentraBook",
+  },
+  createRoomField: {
+    position: "absolute",
+    width: "100%",
+    bottom: 0,
+    borderTopWidth: 1,
+    alignItems: "flex-end",
+    paddingRight: 10,
+    borderColor: colors.white,
+  },
+  createRoomText: {
+    padding: 5,
+    fontFamily: "CentraBook",
+    color: colors.white,
   },
   modalFrame: {
     flex: 1,
@@ -280,7 +237,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modal: {
-    width: "70%",
+    width: "75%",
     borderRadius: 20,
     borderWidth: 5,
     borderColor: colors.tint,
@@ -297,9 +254,12 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     fontFamily: "CentraMedium",
+    color: colors.primary,
+    fontSize: 20,
   },
   modalText: {
     fontSize: 35,
+    textAlign: "center",
   },
 });
 

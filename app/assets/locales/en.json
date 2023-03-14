@@ -18,6 +18,7 @@
   "usernamePlaceholder": "Enter Username",
   "languages": "Languages",
   "deleteInfo": "Delete all custom card sets",
+  "save": "Save",
 
   "createRoom": "Create Room",
   "codeInfo": "Room Code",
@@ -25,7 +26,6 @@
   "ok": "OK",
   "cancel": "Cancel",
   "delete": "Delete",
-  "back": "Back",
   "yes": "Yes",
   "no": "No",
 
@@ -34,7 +34,6 @@
   "changeSuccessful": "Change Successful",
   "newUsernameInfo": "New username us set to",
   "changeFailed": "Change Failed",
-  "sameUsername": "Username is same as before",
   "emptyUsername": "Username can't be empty",
   "deleteWarning": "Are you sure you want to delete all custom card sets?",
 
@@ -58,6 +57,7 @@
 
   "lockIn": "Lock In",
   "lockInInfo": "Are you sure you want to lock in this card?",
+  "firstTurn": "First Turn",
   "random": "Random",
   "lockInRandom": "Lock In a random card",
   "lockInRandomInfo": "Are you sure you want to lock in a random card?",

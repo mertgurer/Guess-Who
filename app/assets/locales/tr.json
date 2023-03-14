@@ -25,7 +25,6 @@
   "ok": "Tamam",
   "cancel": "İptal",
   "delete": "Sil",
-  "back": "Geri",
   "yes": "Evet",
   "no": "Hayır",
 
@@ -34,9 +33,9 @@
   "changeSuccessful": "Ad değiştirme başarılı",
   "newUsernameInfo": "Yeni kullanıcı adınız",
   "changeFailed": "Ad değiştirme tamamlanamadı",
-  "sameUsername": "Yeni kullanıcı adı eskisiyle aynı",
   "emptyUsername": "Kullanıcı adı boş olamaz",
   "deleteWarning": "Özel kart setlerini silmek istediğine emin misin?",
+  "save": "Kaydet",
 
   "saveSuccessful": "Kayıt başarılı",
   "saveInfo1": "Yeni kart seti",
@@ -51,13 +50,14 @@
   "category": "Kategori",
   "createInfo": "Oda kodunu arkadaşına söyle ve oynamaya başla",
   "createStatus": "Diğer oyuncunun katılması bekleniyor",
-  "createdBy": "Yaratıcı",
+  "createdBy": "Oda Kurucusu",
 
   "gameAborted": "Oyun iptal edildi",
   "opponentLeft": "Rakip oyundan çıktı",
 
   "lockIn": "Kitle",
   "lockInInfo": "Bu kartı kitlemek istediğine emin misin?",
+  "firstTurn": "İlk Tur",
   "random": "Rastgele",
   "lockInRandom": "Rastgele bir kart kitle",
   "lockInRandomInfo": "Rastgele bir kartı kilitlemek istediğine emin misiniz?",
