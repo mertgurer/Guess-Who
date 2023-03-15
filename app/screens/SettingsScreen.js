@@ -98,12 +98,12 @@ const SettingsScreen = () => {
                             borderColor:
                               languageIndex === key
                                 ? colors.black
-                                : colors.white,
+                                : colors.third,
                           },
                         ]}
                       >
                         <Image
-                          style={{ width: 59, height: 59, borderRadius: 7 }}
+                          style={{ width: 61, height: 61, borderRadius: 8 }}
                           source={imageMap[key]}
                         />
                       </View>
@@ -204,8 +204,13 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 3,
+    borderWidth: 2,
     borderRadius: 10,
+
+    shadowColor: colors.black,
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 5 },
   },
   buttonZone: {
     flex: 1,

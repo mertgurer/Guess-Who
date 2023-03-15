@@ -34,8 +34,7 @@ const StartScreen = ({ navigation }) => {
         tabBarLabelStyle: { fontFamily: "CentraMedium", fontSize: 12 },
         tabBarActiveTintColor: colors.white,
         tabBarInactiveTintColor: colors.halfBlack,
-        headerLeft: () =>
-          BackButton({ navigation: navigation, language: language }),
+        headerLeft: () => BackButton({ navigation: navigation }),
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -72,10 +71,15 @@ const StartScreen = ({ navigation }) => {
 };
 export default StartScreen;
 
-const BackButton = ({ navigation, language }) => {
+const BackButton = ({ navigation }) => {
   return (
     <TouchableOpacity
-      style={{ flexDirection: "row", alignItems: "center", marginLeft: 2 }}
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        marginLeft: 2,
+        left: 10,
+      }}
       onPress={() => navigation.navigate("Home")}
     >
       <Feather name={"chevron-left"} size={33} color={colors.white} />
