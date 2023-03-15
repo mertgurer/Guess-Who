@@ -34,7 +34,7 @@ const GameScreen = ({ route, navigation }) => {
   const { title, docRef, p1orp2, pick, cardSize } = route.params;
   const [docData, setDocData] = useState();
   const [turn, setTurn] = useState();
-  const [turnCount, setTurnCount] = useState(0);
+  const [turnCount, setTurnCount] = useState(-1);
   const [modalInfoVisible, setModalInfoVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState();
   const [modalText, setModalText] = useState();
