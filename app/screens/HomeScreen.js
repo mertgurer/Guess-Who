@@ -68,12 +68,7 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.watermark}>
-        <Text style={{ fontSize: 13, fontStyle: "italic" }}>
-          {strings[language].gameBy}
-        </Text>
-        <Text style={{ fontSize: 13, fontFamily: "CentraMedium" }}>
-          Mert Gürer
-        </Text>
+        <Image style={{ width: 64, height: 36 }} source={logo} />
       </View>
       <HeaderRightComponent language={language} />
     </View>
@@ -86,7 +81,7 @@ const HeaderRightComponent = ({ language }) => {
   return (
     <SafeAreaView style={styles.infoContainer}>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <AntDesign name="questioncircle" size={30} color={colors.black} />
+        <AntDesign name="questioncircle" size={25} color={colors.secondary} />
       </TouchableOpacity>
       <Modal
         visible={modalVisible}
@@ -173,7 +168,8 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     position: "absolute",
-    right: 15,
+    top: 60,
+    right: 20,
   },
   modalFrame: {
     flex: 1,

@@ -76,13 +76,22 @@ const BackButton = ({ navigation }) => {
     <TouchableOpacity
       style={{
         flexDirection: "row",
+        justifyContent: "center",
         alignItems: "center",
-        marginLeft: 2,
-        left: 10,
+        backgroundColor: colors.white,
+        width: 32,
+        aspectRatio: 1,
+        borderRadius: 16,
+        left: 20,
       }}
-      onPress={() => navigation.navigate("Home")}
+      onPress={() => navigation.goBack()}
     >
-      <Feather name={"chevron-left"} size={33} color={colors.white} />
+      <Feather
+        name={"chevron-left"}
+        size={33}
+        color={colors.primary}
+        style={{ right: 1 }}
+      />
     </TouchableOpacity>
   );
 };

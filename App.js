@@ -134,7 +134,11 @@ export default function App() {
                 title: strings[language].settings,
                 headerStyle: { backgroundColor: colors.third },
                 headerTintColor: colors.black,
-                headerLeft: () => BackButton({ navigation }),
+                headerLeft: () =>
+                  BackButton({
+                    navigation: navigation,
+                    front: colors.black,
+                  }),
               })}
             />
             <Stack.Screen
@@ -142,7 +146,11 @@ export default function App() {
               component={CardCategoriesScreen}
               options={({ navigation }) => ({
                 title: strings[language].categories,
-                headerLeft: () => BackButton({ navigation }),
+                headerLeft: () =>
+                  BackButton({
+                    navigation: navigation,
+                    front: colors.primary,
+                  }),
                 headerRight: () => (
                   <TouchableOpacity
                     style={{
@@ -160,7 +168,7 @@ export default function App() {
                     <Feather
                       name="plus"
                       size={24}
-                      color={colors.black}
+                      color={colors.primary}
                       style={{ left: 1 }}
                     />
                   </TouchableOpacity>
@@ -173,7 +181,11 @@ export default function App() {
               component={CardScreen}
               options={({ route, navigation }) => ({
                 title: route.params.title,
-                headerLeft: () => BackButton({ navigation }),
+                headerLeft: () =>
+                  BackButton({
+                    navigation: navigation,
+                    front: colors.primary,
+                  }),
               })}
             />
             <Stack.Screen
@@ -207,7 +219,7 @@ export default function App() {
   }
 }
 
-const BackButton = ({ navigation }) => {
+const BackButton = ({ navigation, front }) => {
   return (
     <TouchableOpacity
       style={{
@@ -224,7 +236,7 @@ const BackButton = ({ navigation }) => {
       <Feather
         name={"chevron-left"}
         size={33}
-        color={colors.black}
+        color={front}
         style={{ right: 1 }}
       />
     </TouchableOpacity>

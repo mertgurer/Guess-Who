@@ -83,7 +83,7 @@ const CardScreen = ({ route, navigation }) => {
               <Feather
                 name="edit"
                 size={22}
-                color={colors.black}
+                color={colors.primary}
                 style={{ right: -1 }}
               />
             </TouchableOpacity>
@@ -102,7 +102,7 @@ const CardScreen = ({ route, navigation }) => {
               <Ionicons
                 name="trash-outline"
                 size={27}
-                color={colors.black}
+                color={colors.primary}
                 style={{ right: -1 }}
               />
             </TouchableOpacity>
