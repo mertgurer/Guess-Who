@@ -200,7 +200,7 @@ const PickScreen = ({ route, navigation }) => {
             )}
             numColumns={2}
             columnWrapperStyle={{ justifyContent: "space-evenly" }}
-            contentContainerStyle={{ paddingBottom: 120, paddingTop: 10 }}
+            contentContainerStyle={{ paddingBottom: 100, paddingTop: 5 }}
             keyExtractor={(index) => index.toString()}
           />
           <SafeAreaView style={styles.buttonArea}>
@@ -339,13 +339,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardBox: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.fourth,
     width: 190,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    borderWidth: 3,
+    borderWidth: 4,
     borderColor: colors.black,
     marginVertical: 10,
     padding: 5,
@@ -424,7 +424,7 @@ const Item = ({
     >
       <Image
         source={{ uri: url }}
-        style={{ width: 184, height: 184, borderRadius: 6 }}
+        style={{ width: 182, height: 182, borderRadius: 6 }}
       />
       <Text
         style={[

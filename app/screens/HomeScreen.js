@@ -10,10 +10,12 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
+
+import cards from "../assets/cards.png";
+import play from "../assets/play.png";
 
 import { colors } from "../assets/colors";
 import gameLogo from "../assets/gameLogo.png";
@@ -45,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
             activeOpacity={0.8}
             onPress={() => navigation.push("Play")}
           >
-            <Octicons name="play" size={55} color={colors.white} />
+            <Image source={play} style={{ width: "60%", height: "60%" }} />
           </TouchableOpacity>
           {/* === cards button === */}
           <TouchableOpacity
@@ -53,11 +55,7 @@ const HomeScreen = ({ navigation }) => {
             activeOpacity={0.8}
             onPress={() => navigation.push("CardCategories")}
           >
-            <MaterialCommunityIcons
-              name="cards"
-              size={60}
-              color={colors.white}
-            />
+            <Image source={cards} style={{ width: "70%", height: "70%" }} />
           </TouchableOpacity>
         </View>
         {/* === settings button === */}

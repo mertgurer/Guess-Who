@@ -19,14 +19,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { strings } from "../../assets/languages";
 import { LinearGradient } from "expo-linear-gradient";
 
-const CustomCardScreen = ({ navigation }) => {
+const CustomCardScreen = ({ route, navigation }) => {
+  const nameSize =
+    route.params.title === ""
+      ? 6
+      : route.params.cards.length % 2 === 0
+      ? route.params.cards.length + 2
+      : route.params.cards.length + 1;
+
   const { customCardsArray, setCustomCardsArray, language } =
     useContext(DataContext);
-  const [cardCount, setCardCount] = useState(6);
+  const [cardCount, setCardCount] = useState(nameSize);
   const [customCards, setCustomCards] = useState({
-    title: "",
-    cards: [],
+    title: route.params.title,
+    cards: route.params.cards,
   });
+  const passedTitle = route.params.title;
 
   // auto upadte for the input fields
   const handleChangeText = (text, index) => {
@@ -38,52 +46,81 @@ const CustomCardScreen = ({ navigation }) => {
   // handle the submition of new card set
   const handleSubmit = () => {
     // filter the input values
-    const filteredCrads = customCards.cards.filter(
-      (card) => card !== undefined && card.length !== 0
-    );
+    const filteredCards = customCards.cards
+      .filter((card) => card !== undefined && card.trim().length !== 0)
+      .map((card) => card.trim());
     const filteredTitle = customCards.title.trim();
 
     // validate new card set
-    if (filteredTitle.length !== 0 && filteredCrads.length >= 2) {
+    if (filteredTitle.length !== 0 && filteredCards.length >= 2) {
       if (customCardsArray) {
-        let uniqueFlag = true;
+        if (passedTitle !== "") {
+          const object = customCardsArray.find(
+            (item) => item.title === passedTitle
+          );
 
-        // check the saved sets for title match
-        for (let i = 0; i < customCardsArray.length; i++) {
-          if (filteredTitle === customCardsArray[i].title) {
-            failAlert({
-              header: strings[language].saveFail,
-              message: `${strings[language].saveFailInfo1} "${filteredTitle}" ${strings[language].saveFailInfo2}`,
-            });
-            uniqueFlag = false;
-            break;
-          }
-        }
-        // if first set title is unique add it to the array
-        if (uniqueFlag) {
-          const id = customCardsArray[customCardsArray.length - 1].id + 1;
-
-          const tempCardSet = {
+          const editedCards = {
+            ...object,
             title: filteredTitle,
-            cards: filteredCrads,
-            id: id,
+            cards: filteredCards,
           };
-          successAlert({
-            title: filteredTitle,
-            navigation: navigation,
-            language,
+
+          const updatedArray = customCardsArray.map((item) => {
+            return item.title === passedTitle ? editedCards : item;
           });
-          setCustomCardsArray([...customCardsArray, tempCardSet]);
+
+          setCustomCardsArray(updatedArray);
           saveCardState({
-            customCardsArray: [...customCardsArray, tempCardSet],
+            customCardsArray: updatedArray,
           });
+
+          navigation.goBack();
+
+          navigation.navigate("Cards", {
+            title: editedCards.title,
+            cards: editedCards.cards,
+            id: editedCards.id,
+          });
+        } else {
+          let uniqueFlag = true;
+
+          // check the saved sets for title match
+          for (let i = 0; i < customCardsArray.length; i++) {
+            if (filteredTitle === customCardsArray[i].title) {
+              failAlert({
+                header: strings[language].saveFail,
+                message: `${strings[language].saveFailInfo1} "${filteredTitle}" ${strings[language].saveFailInfo2}`,
+              });
+              uniqueFlag = false;
+              break;
+            }
+          }
+          // if first set title is unique add it to the array
+          if (uniqueFlag) {
+            const id = customCardsArray[customCardsArray.length - 1].id + 1;
+
+            const tempCardSet = {
+              title: filteredTitle,
+              cards: filteredCards,
+              id: id,
+            };
+            successAlert({
+              title: filteredTitle,
+              navigation: navigation,
+              language,
+            });
+            setCustomCardsArray([...customCardsArray, tempCardSet]);
+            saveCardState({
+              customCardsArray: [...customCardsArray, tempCardSet],
+            });
+          }
         }
       }
       // if there is no other card sets add this one
       else {
         const tempCardSet = {
           title: filteredTitle,
-          cards: filteredCrads,
+          cards: filteredCards,
           id: 100,
         };
 
@@ -112,7 +149,7 @@ const CustomCardScreen = ({ navigation }) => {
     // update the form with the filtered data
     setCustomCards({
       ...customCards,
-      cards: filteredCrads,
+      cards: filteredCards,
       title: filteredTitle,
     });
   };
@@ -196,7 +233,12 @@ const CustomCardScreen = ({ navigation }) => {
           }}
           activeOpacity={0.8}
         >
-          <AntDesign name="minuscircleo" size={35} color={colors.third} />
+          <AntDesign
+            name="minuscircleo"
+            size={35}
+            color={colors.third}
+            style={{ left: 1 }}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
@@ -262,7 +304,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 17,
     borderWidth: 1,
-    borderColor: colors.halfWhite,
+    borderColor: colors.almostWhite,
     fontFamily: "CentraBook",
   },
   buttonArea: {

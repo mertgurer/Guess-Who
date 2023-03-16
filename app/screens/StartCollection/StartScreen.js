@@ -64,7 +64,7 @@ const StartScreen = ({ navigation }) => {
       <Tab.Screen
         name="JoinGame"
         component={JoinGameScreen}
-        options={{ title: strings[language].joinGame }}
+        options={{ title: strings[language].joinGame, headerShown: false }}
       />
     </Tab.Navigator>
   );

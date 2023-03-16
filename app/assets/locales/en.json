@@ -51,6 +51,8 @@
   "createInfo": "Give the room code to your friend and start playing",
   "createStatus": "Waiting for other player to join",
   "createdBy": "Created By",
+  "join": "Join",
+  "joinInfo": "Join a game with a room code",
 
   "gameAborted": "Game Aborted",
   "opponentLeft": "Opponent Left",

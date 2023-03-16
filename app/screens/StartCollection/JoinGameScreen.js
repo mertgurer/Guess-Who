@@ -7,8 +7,8 @@ import {
   TouchableWithoutFeedback,
   View,
   Keyboard,
+  KeyboardAvoidingView,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   collection,
   query,
@@ -20,8 +20,6 @@ import {
 } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 
-import Ionicons from "react-native-vector-icons/Ionicons";
-
 import DataContext from "../../../DataContext";
 import { colors } from "../../assets/colors";
 import { strings } from "../../assets/languages";
@@ -29,16 +27,19 @@ import { db } from "../../../firebase";
 
 const JoinGameScreen = ({ navigation }) => {
   const { language, username } = useContext(DataContext);
-  const [roomCode, setRoomCode] = useState();
+  const [roomCode, setRoomCode] = useState(["", "", "", ""]);
   const [roomFound, setRoomFound] = useState(undefined);
 
-  const handleChange = async (text) => {
-    const inputValue = text.replace(/[^0-9]/g, "");
+  const handleChange = async (value, index) => {
+    const filteredValue = value.replace(/[^0-9]/g, "");
 
-    setRoomCode(inputValue);
+    const newCode = [...roomCode];
+    newCode[index] = value;
+    setRoomCode(newCode);
+
     setRoomFound(
       await scanForGame({
-        code: parseInt(inputValue),
+        code: parseInt(newCode.join("")),
         setRoomFound: setRoomFound,
       })
     );
@@ -46,58 +47,91 @@ const JoinGameScreen = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setRoomCode("");
+      setRoomCode(["", "", "", ""]);
       setRoomFound(undefined);
     }, [])
   );
 
+  const digitCount = 4;
+
+  const focusNextInput = (index) => {
+    index < digitCount - 1 && inputs[index + 1].focus();
+  };
+
+  const focusPrevInput = (index) => {
+    if (index > 0) {
+      const newCode = [...roomCode];
+      newCode[index - 1] = "";
+      setRoomCode(newCode);
+
+      inputs[index - 1].focus();
+    }
+  };
+
+  const inputs = [];
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <LinearGradient
-        style={styles.container}
-        colors={[
-          colors.background1,
-          colors.background2,
-          colors.background2,
-          colors.background1,
-        ]}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <View style={styles.header}>
-          <Text style={styles.headerText}>{strings[language].codeInfo}</Text>
-        </View>
-
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
         {roomFound !== undefined && (
-          <View style={styles.foundGameBox}>
-            <Text style={styles.foundGameBoxHeader}>
-              {strings[language].category}
-            </Text>
-            <Text style={styles.foundGameBoxContent}>{roomFound.title}</Text>
-            <Text style={styles.foundGameBoxHeader}>
-              {strings[language].codeInfo}
-            </Text>
-            <Text style={styles.foundGameBoxContent}>{roomCode}</Text>
-            <Text style={styles.foundGameBoxHeader}>
-              {strings[language].createdBy}
-            </Text>
-            <Text style={styles.foundGameBoxContent}>{roomFound.p1_name}</Text>
+          <View style={styles.box}>
+            <Text style={styles.headerText}>{strings[language].category}</Text>
+            <Text style={styles.boxContent}>{roomFound.title}</Text>
+            <Text style={styles.headerText}>{strings[language].createdBy}</Text>
+            <Text style={styles.boxContent}>{roomFound.p1_name}</Text>
           </View>
         )}
+        <View style={styles.box}>
+          <Text style={styles.headerText}>{strings[language].codeInfo}</Text>
+          {roomFound === undefined && (
+            <Text
+              style={[
+                styles.boxContent,
+                { fontSize: 20, marginBottom: 10, marginTop: 70 },
+              ]}
+            >
+              {strings[language].joinInfo}
+            </Text>
+          )}
+        </View>
 
-        <TextInput
-          style={styles.roomCodeInput}
-          onChangeText={handleChange}
-          value={roomCode}
-          placeholder={strings[language].codeInfo}
-          keyboardType="numeric"
-          maxLength={4}
-        />
+        <View style={styles.inputZone}>
+          {(() => {
+            const digitZones = [];
+            for (let index = 0; index < digitCount; index++) {
+              digitZones.push(
+                <TextInput
+                  key={index}
+                  style={styles.roomCodeInput}
+                  onChangeText={(value) => {
+                    handleChange(value, index);
+                    value !== "" && focusNextInput(index);
+                  }}
+                  value={roomCode[index]}
+                  keyboardType="numeric"
+                  maxLength={1}
+                  ref={(input) => {
+                    inputs[index] = input;
+                  }}
+                  onKeyPress={({ nativeEvent }) => {
+                    if (nativeEvent.key === "Backspace") {
+                      if (roomCode[index] === "") {
+                        focusPrevInput(index);
+                      }
+                    }
+                  }}
+                />
+              );
+            }
+
+            return digitZones;
+          })()}
+        </View>
         <TouchableOpacity
           onPress={() => {
             if (roomFound)
               joinRoom({
-                roomCode: parseInt(roomCode),
+                roomCode: parseInt(roomCode.join("")),
                 username: username,
                 navigation: navigation,
               });
@@ -105,10 +139,18 @@ const JoinGameScreen = ({ navigation }) => {
           activeOpacity={0.8}
         >
           <View style={styles.joinButton}>
-            <Ionicons name="arrow-forward" size={50} color={colors.black} />
+            <Text
+              style={{
+                fontFamily: "CentraBook",
+                fontSize: 22,
+                color: colors.black,
+              }}
+            >
+              {strings[language].join}
+            </Text>
           </View>
         </TouchableOpacity>
-      </LinearGradient>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
@@ -121,65 +163,46 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  header: {
-    width: 200,
-    height: 60,
-    backgroundColor: colors.third,
-    borderRadius: 10,
-    borderWidth: 3,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    top: 30,
+    backgroundColor: colors.primary,
   },
   headerText: {
+    fontSize: 32,
+    fontFamily: "CentraMedium",
+    color: colors.white,
+  },
+  box: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  boxContent: {
+    fontFamily: "CentraBook",
     fontSize: 25,
-    fontFamily: "CentraBook",
+    color: colors.halfWhite,
+    marginTop: 2,
+    marginBottom: 30,
   },
-  foundGameBox: {
-    backgroundColor: colors.secondary,
-    width: 300,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: colors.black,
-    padding: 20,
-    marginBottom: 20,
-  },
-  foundGameBoxHeader: {
-    fontFamily: "CentraBook",
-    fontSize: 15,
-  },
-  foundGameBoxContent: {
-    fontFamily: "CentraBook",
-    fontSize: 30,
-    marginBottom: 15,
-    marginLeft: 7,
+  inputZone: {
+    flexDirection: "row",
+    gap: 10,
   },
   roomCodeInput: {
-    backgroundColor: colors.secondary,
-    width: 220,
-    height: 60,
-    padding: 10,
-    borderWidth: 2,
-    borderColor: colors.black,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    fontSize: 20,
+    width: 30,
+    fontSize: 35,
     textAlign: "center",
     fontFamily: "CentraBook",
+    color: colors.halfWhite,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.white,
+    marginTop: 2,
+    marginBottom: 50,
   },
   joinButton: {
     width: 220,
-    height: 60,
-    backgroundColor: colors.third,
-    borderWidth: 2,
-    borderColor: colors.black,
+    height: 55,
+    backgroundColor: colors.secondary,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    borderTopWidth: 0,
   },
 });
 

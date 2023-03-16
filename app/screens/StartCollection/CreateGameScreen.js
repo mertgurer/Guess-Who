@@ -7,6 +7,8 @@ import {
   View,
   Modal,
   FlatList,
+  Image,
+  SafeAreaView,
 } from "react-native";
 import {
   addDoc,
@@ -23,7 +25,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { strings } from "../../assets/languages";
 import DataContext from "../../../DataContext";
 import { colors } from "../../assets/colors";
-import { db, getCategoriesData } from "../../../firebase";
+import { db, getCategoriesData, storage } from "../../../firebase";
+import { getDownloadURL, ref } from "firebase/storage";
 
 const Item = ({
   item,
@@ -35,12 +38,22 @@ const Item = ({
   setModalVisible,
   navigation,
   setCategoryIndex,
+  url,
 }) => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   return (
     <View style={styles.categoryBox}>
-      <Text style={styles.categoryBoxContent}>{item.title}</Text>
+      {url ? (
+        <Image
+          source={{ uri: url }}
+          style={{ width: "100%", height: "100%", borderRadius: 13 }}
+          resizeMode="cover"
+        />
+      ) : (
+        <Text style={styles.categoryBoxContent}>{item.title}</Text>
+      )}
+
       <View style={styles.createRoomField}>
         <TouchableOpacity
           disabled={buttonDisabled}
@@ -83,13 +96,33 @@ const CreateGameScreen = ({ navigation }) => {
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [roomCode, setRoomCode] = useState();
+  const [urls, setUrls] = useState();
 
   const fetchCategoriesData = async () => {
+    const temp = await getCategoriesData();
+    fetchImage({ data: temp });
+
     if (customCardsArray) {
-      setCategoryData([...(await getCategoriesData()), ...customCardsArray]);
+      setCategoryData([...temp, ...customCardsArray]);
     } else {
-      setCategoryData(await getCategoriesData());
+      setCategoryData(temp);
     }
+  };
+
+  const fetchImage = async ({ data }) => {
+    const imageUrls = {};
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].id < 100) {
+        const storageRef = ref(
+          storage,
+          `${data[i].title}/${data[i].title}_cover.jpg`
+        );
+
+        const url = await getDownloadURL(storageRef);
+        imageUrls[data[i].title] = url;
+      }
+    }
+    setUrls(imageUrls);
   };
 
   useEffect(() => {
@@ -98,13 +131,7 @@ const CreateGameScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {categoryData === undefined ? (
-        <ActivityIndicator
-          style={styles.categoryList}
-          color={colors.black}
-          size="large"
-        />
-      ) : (
+      {categoryData && urls ? (
         <FlatList
           style={styles.cardCategories}
           data={categoryData}
@@ -119,16 +146,38 @@ const CreateGameScreen = ({ navigation }) => {
               setModalVisible={setModalVisible}
               navigation={navigation}
               setCategoryIndex={setCategoryIndex}
+              url={urls[item.title]}
             />
           )}
+          ListHeaderComponent={() => (
+            <View style={styles.categoryBox}>
+              <Text
+                style={{
+                  fontFamily: "CentraBook",
+                  fontSize: 30,
+                  color: colors.white,
+                }}
+              >
+                {strings[language].categories}
+              </Text>
+            </View>
+          )}
           contentContainerStyle={{
-            paddingBottom: 30,
-            paddingTop: 20,
+            paddingBottom: 15,
+            paddingTop: 10,
             paddingHorizontal: 10,
             gap: 10,
           }}
           keyExtractor={(item) => item.id.toString()}
         />
+      ) : (
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <ActivityIndicator
+            style={styles.categoryList}
+            color={colors.black}
+            size="small"
+          />
+        </View>
       )}
 
       {roomCode !== undefined && (
@@ -202,7 +251,7 @@ const styles = StyleSheet.create({
     height: 120,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 15,
+    borderRadius: 14,
     marginHorizontal: 5,
 
     shadowColor: colors.black,
@@ -223,7 +272,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     alignItems: "flex-end",
     paddingRight: 10,
-    borderColor: colors.white,
+    borderColor: colors.halfWhite,
   },
   createRoomText: {
     padding: 5,

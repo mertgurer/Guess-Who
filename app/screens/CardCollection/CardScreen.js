@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 
 import { colors } from "../../assets/colors";
 import DataContext from "../../../DataContext";
@@ -69,25 +70,49 @@ const CardScreen = ({ route, navigation }) => {
     if (id > 99) {
       navigation.setOptions({
         headerRight: () => (
-          <TouchableOpacity
-            onPress={() =>
-              deleteAlert({
-                title: title,
-                customCardsArray: customCardsArray,
-                setCustomCardsArray: setCustomCardsArray,
-                navigation: navigation,
-                language: language,
-              })
-            }
-          >
-            <Ionicons name="trash-outline" size={30} color={colors.white} />
-          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() => {
+                navigation.navigate("CustomCard", {
+                  title: title,
+                  cards: cards,
+                });
+              }}
+            >
+              <Feather
+                name="edit"
+                size={22}
+                color={colors.black}
+                style={{ right: -1 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() =>
+                deleteAlert({
+                  title: title,
+                  customCardsArray: customCardsArray,
+                  setCustomCardsArray: setCustomCardsArray,
+                  navigation: navigation,
+                  language: language,
+                })
+              }
+            >
+              <Ionicons
+                name="trash-outline"
+                size={27}
+                color={colors.black}
+                style={{ right: -1 }}
+              />
+            </TouchableOpacity>
+          </View>
         ),
       });
     } else {
       fetchImage();
     }
-  }, [id]);
+  }, [id, title, cards]);
 
   return urls ? (
     <FlatList
@@ -99,17 +124,17 @@ const CardScreen = ({ route, navigation }) => {
       numColumns={2}
       columnWrapperStyle={{ justifyContent: "space-evenly" }}
       contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}
-      keyExtractor={(index) => index.toString()}
+      keyExtractor={(item, index) => index.toString()}
     />
   ) : (
     <FlatList
       style={styles.cards}
       data={cards}
-      renderItem={({ item }) => <Item card={item} />}
+      renderItem={({ item }) => <Item card={item} originals={false} />}
       numColumns={2}
       columnWrapperStyle={{ justifyContent: "space-evenly" }}
       contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}
-      keyExtractor={(index) => index.toString()}
+      keyExtractor={(item, index) => index.toString()}
     />
   );
 };
@@ -120,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.third,
   },
   cardBox: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.fourth,
     width: 190,
     aspectRatio: 1,
     justifyContent: "center",
@@ -141,6 +166,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "CentraBook",
     position: "absolute",
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  headerButton: {
+    backgroundColor: colors.white,
+    width: 32,
+    aspectRatio: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 16,
   },
 });
 
@@ -165,17 +203,26 @@ const deleteAlert = ({
         text: strings[language].delete,
         style: "destructive",
         onPress: async () => {
-          const removedCustomCards = customCardsArray.filter(
+          let removedCustomCards = customCardsArray.filter(
             (category) => category.title !== title
           );
-
-          try {
-            const jsonValue = JSON.stringify(removedCustomCards);
-            await AsyncStorage.setItem("customCards", jsonValue);
-            setCustomCardsArray(removedCustomCards);
-            navigation.goBack();
-          } catch (e) {
-            console.log(e);
+          if (removedCustomCards.length === 0) {
+            try {
+              await AsyncStorage.removeItem("customCards");
+              setCustomCardsArray(undefined);
+              navigation.goBack();
+            } catch (e) {
+              console.log(e);
+            }
+          } else {
+            try {
+              const jsonValue = JSON.stringify(removedCustomCards);
+              await AsyncStorage.setItem("customCards", jsonValue);
+              setCustomCardsArray(removedCustomCards);
+              navigation.goBack();
+            } catch (e) {
+              console.log(e);
+            }
           }
         },
       },

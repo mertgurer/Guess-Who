@@ -27,16 +27,15 @@ const Item = ({ item, navigation, url }) => (
     }}
   >
     <View style={styles.categoryBox}>
-      <Image
-        source={{ uri: url }}
-        style={{
-          width: 184,
-          height: 184,
-          borderRadius: 6,
-          position: "absolute",
-        }}
-      />
-      <Text style={styles.categoryBoxContent}>{item.title}</Text>
+      {url ? (
+        <Image
+          source={{ uri: url }}
+          style={{ width: "100%", height: "100%", borderRadius: 13 }}
+          resizeMode="cover"
+        />
+      ) : (
+        <Text style={styles.categoryBoxContent}>{item.title}</Text>
+      )}
     </View>
   </Pressable>
 );
@@ -50,36 +49,38 @@ const CardCategoriesScreen = ({ navigation }) => {
   const [urls, setUrls] = useState();
 
   const fetchCategoriesData = async () => {
-    temp = await getCategoriesData();
+    const temp = await getCategoriesData();
+    fetchImage({ data: temp });
+
     if (customCardsArray) {
       setCategoryData([...temp, ...customCardsArray]);
     } else {
       setCategoryData(temp);
     }
-    fetchImage({ data: temp });
   };
 
   const refreshFetchCategoriesData = async () => {
     setIsRefreshing(true);
 
-    temp = await getCategoriesData();
+    const temp = await getCategoriesData();
+    fetchImage({ data: temp });
+
     if (customCardsArray) {
       setCategoryData([...temp, ...customCardsArray]);
     } else {
       setCategoryData(temp);
     }
-    fetchImage({ data: temp });
 
     setIsRefreshing(false);
   };
 
   const fetchImage = async ({ data }) => {
     const imageUrls = {};
-    for (let i = 0; i < 1 /*  data.length */; i++) {
+    for (let i = 0; i < data.length; i++) {
       if (data[i].id < 100) {
         const storageRef = ref(
           storage,
-          `${data[i].title}/${data[i].title}.png`
+          `${data[i].title}/${data[i].title}_cover.jpg`
         );
 
         const url = await getDownloadURL(storageRef);
@@ -91,8 +92,6 @@ const CardCategoriesScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchCategoriesData();
-
-    console.log(urls);
   }, [isFocused]);
 
   useFocusEffect(
@@ -110,9 +109,7 @@ const CardCategoriesScreen = ({ navigation }) => {
         backgroundColor: colors.third,
       }}
     >
-      {!categoryData ? (
-        <ActivityIndicator color={colors.white} size="large" />
-      ) : (
+      {categoryData && urls ? (
         <FlatList
           style={styles.cardCategories}
           data={categoryData}
@@ -121,7 +118,7 @@ const CardCategoriesScreen = ({ navigation }) => {
           )}
           contentContainerStyle={{
             paddingBottom: 30,
-            paddingTop: 20,
+            paddingTop: 10,
             paddingHorizontal: 10,
             gap: 10,
           }}
@@ -133,6 +130,8 @@ const CardCategoriesScreen = ({ navigation }) => {
             />
           }
         />
+      ) : (
+        <ActivityIndicator color={colors.black} size="small" />
       )}
     </View>
   );
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
     height: 120,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 15,
+    borderRadius: 14,
     marginHorizontal: 5,
 
     shadowColor: colors.black,
@@ -156,6 +155,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
   },
   categoryBoxContent: {
+    position: "absolute",
     color: colors.white,
     fontSize: 20,
     textAlign: "center",

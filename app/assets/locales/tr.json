@@ -51,6 +51,8 @@
   "createInfo": "Oda kodunu arkadaşına söyle ve oynamaya başla",
   "createStatus": "Diğer oyuncunun katılması bekleniyor",
   "createdBy": "Oda Kurucusu",
+  "join": "Katıl",
+  "joinInfo": "Oda koduyla bir oyuna katılın",
 
   "gameAborted": "Oyun iptal edildi",
   "opponentLeft": "Rakip oyundan çıktı",

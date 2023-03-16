@@ -153,7 +153,9 @@ export default function App() {
                       alignItems: "center",
                       borderRadius: 16,
                     }}
-                    onPress={() => navigation.push("CustomCard")}
+                    onPress={() =>
+                      navigation.push("CustomCard", { title: "", cards: [] })
+                    }
                   >
                     <Feather
                       name="plus"

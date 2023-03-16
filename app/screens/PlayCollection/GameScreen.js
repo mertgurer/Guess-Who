@@ -46,6 +46,7 @@ const GameScreen = ({ route, navigation }) => {
   const [modalGuessVisible, setModalGuessVisible] = useState(false);
   const [guessIndex, setGuessIndex] = useState(-1);
   const [gameOver, setGameOver] = useState(false);
+  const [cardVisibility, setCardVisibility] = useState(false);
 
   const fetchImage = async () => {
     const storageRef = ref(storage, title);
@@ -146,10 +147,16 @@ const GameScreen = ({ route, navigation }) => {
             <Text style={styles.headerTitle}>{strings[language].turn}</Text>
             <Text style={styles.headerLabel}>{turn}</Text>
           </View>
-          <View style={styles.headerZone}>
+          <TouchableOpacity
+            style={styles.headerZone}
+            onPress={() => setCardVisibility(!cardVisibility)}
+            activeOpacity={1}
+          >
             <Text style={styles.headerTitle}>{strings[language].yourCard}</Text>
-            <Text style={styles.headerLabel}>{pick}</Text>
-          </View>
+            <Text style={styles.headerLabel}>
+              {cardVisibility ? pick : "****"}
+            </Text>
+          </TouchableOpacity>
           <View style={styles.headerZone}>
             <Text style={styles.headerTitle}>
               {strings[language].turnCount}
@@ -161,7 +168,7 @@ const GameScreen = ({ route, navigation }) => {
         </SafeAreaView>
       ),
     });
-  }, [turn, turnCount]);
+  }, [turn, turnCount, cardVisibility]);
 
   return (
     <View style={styles.container}>
@@ -169,29 +176,24 @@ const GameScreen = ({ route, navigation }) => {
         <View style={styles.container}>
           <FlatList
             style={styles.cards}
-            data={docData.cards}
-            renderItem={({ item, index }) => (
-              <Item
-                card={item}
-                index={index}
-                markedCards={markedCards}
-                setMarkedCards={setMarkedCards}
-                url={urls[item]}
-                originals={id > 99 ? false : true}
-              />
-            )}
+            data={orderCrads({
+              docData: docData,
+              markedCards: markedCards,
+              setMarkedCards: setMarkedCards,
+              urls: urls,
+            })}
+            renderItem={({ item }) => item}
             numColumns={2}
             columnWrapperStyle={{ justifyContent: "space-evenly" }}
-            contentContainerStyle={{ paddingBottom: 90, paddingTop: 10 }}
-            keyExtractor={(index) => index.toString()}
+            contentContainerStyle={{ paddingBottom: 90, paddingTop: 5 }}
+            keyExtractor={(item, index) => index.toString()}
           />
           <View style={styles.buttonArea}>
             <TouchableOpacity
               style={[
                 styles.buttonBox,
                 username !== turn && {
-                  backgroundColor: "grey",
-                  opacity: 0.9,
+                  opacity: 0.5,
                 },
               ]}
               onPress={() => {
@@ -211,8 +213,7 @@ const GameScreen = ({ route, navigation }) => {
                 styles.buttonBox,
                 { backgroundColor: "#d00" },
                 username !== turn && {
-                  backgroundColor: "grey",
-                  opacity: 0.9,
+                  opacity: 0.5,
                 },
               ]}
               onPress={async () => {
@@ -323,6 +324,8 @@ const GameScreen = ({ route, navigation }) => {
                       setModalText: setModalText,
                       setModalInfoVisible: setModalInfoVisible,
                       setGameOver: setGameOver,
+                      markedCards: markedCards,
+                      setMarkedCards: setMarkedCards,
                     });
                   }}
                   activeOpacity={0.8}
@@ -454,7 +457,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardBox: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.fourth,
     width: 190,
     aspectRatio: 1,
     justifyContent: "center",
@@ -488,7 +491,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     flexDirection: "row",
     justifyContent: "space-evenly",
-    backgroundColor: "#50808ea0",
+    backgroundColor: "#50728Ea0",
   },
   buttonBox: {
     width: 140,
@@ -566,6 +569,39 @@ const styles = StyleSheet.create({
   },
 });
 
+const orderCrads = ({ docData, markedCards, setMarkedCards, urls }) => {
+  const elements = [];
+  for (let index = 0; index < docData.cards.length; index++) {
+    if (!markedCards[index]) {
+      elements.push(
+        <Item
+          card={docData.cards[index]}
+          index={index}
+          markedCards={markedCards}
+          setMarkedCards={setMarkedCards}
+          url={urls[docData.cards[index]]}
+          originals={docData.id > 99 ? false : true}
+        />
+      );
+    }
+  }
+  for (let index = 0; index < docData.cards.length; index++) {
+    if (markedCards[index]) {
+      elements.push(
+        <Item
+          card={docData.cards[index]}
+          index={index}
+          markedCards={markedCards}
+          setMarkedCards={setMarkedCards}
+          url={urls[docData.cards[index]]}
+          originals={docData.id > 99 ? false : true}
+        />
+      );
+    }
+  }
+  return elements;
+};
+
 const Item = ({ card, index, markedCards, setMarkedCards, url, originals }) => (
   <TouchableOpacity
     onPress={() => {
@@ -576,10 +612,13 @@ const Item = ({ card, index, markedCards, setMarkedCards, url, originals }) => (
     activeOpacity={0.8}
   >
     <View style={[styles.cardBox, markedCards[index] && styles.marked]}>
-      <Image
-        source={{ uri: url }}
-        style={{ width: 184, height: 184, borderRadius: 6 }}
-      />
+      {originals && (
+        <Image
+          source={{ uri: url }}
+          style={{ width: 184, height: 184, borderRadius: 6 }}
+        />
+      )}
+
       <Text
         style={[
           styles.cardBoxContent,
@@ -612,6 +651,8 @@ const makeGuess = async ({
   setModalText,
   setModalInfoVisible,
   setGameOver,
+  markedCards,
+  setMarkedCards,
 }) => {
   if (cards[pick] === oponentPick) {
     setGameOver(true);
@@ -627,6 +668,10 @@ const makeGuess = async ({
     setModalText(strings[language].correctGuessInfo);
     setModalInfoVisible(true);
   } else {
+    let temp = markedCards;
+    temp[pick] = true;
+    setMarkedCards(temp);
+
     setModalGuessVisible(false);
     if (p1orp2 === "p1") {
       await updateDoc(docRef, { turn: "p2" });
