@@ -10,12 +10,12 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import Octicons from "react-native-vector-icons/Octicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import cards from "../assets/cards.png";
 import play from "../assets/play.png";
+import settings from "../assets/settings.png";
 
 import { colors } from "../assets/colors";
 import gameLogo from "../assets/gameLogo.png";
@@ -64,7 +64,7 @@ const HomeScreen = ({ navigation }) => {
           activeOpacity={0.8}
           onPress={() => navigation.push("Settings")}
         >
-          <Octicons name="gear" size={50} color={colors.white} />
+          <Image source={settings} style={{ width: 72, height: 67 }} />
         </TouchableOpacity>
       </View>
       <View style={styles.watermark}>

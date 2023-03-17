@@ -9,6 +9,7 @@ import {
   FlatList,
   Image,
   SafeAreaView,
+  ImageBackground,
 } from "react-native";
 import {
   addDoc,
@@ -21,6 +22,8 @@ import {
 } from "firebase/firestore";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
+
+import banner from "../../assets/banner.png";
 
 import { strings } from "../../assets/languages";
 import DataContext from "../../../DataContext";
@@ -150,7 +153,7 @@ const CreateGameScreen = ({ navigation }) => {
             />
           )}
           ListHeaderComponent={() => (
-            <View style={styles.categoryBox}>
+            <ImageBackground style={styles.categoryBox} source={banner}>
               <Text
                 style={{
                   fontFamily: "CentraBook",
@@ -160,7 +163,7 @@ const CreateGameScreen = ({ navigation }) => {
               >
                 {strings[language].categories}
               </Text>
-            </View>
+            </ImageBackground>
           )}
           contentContainerStyle={{
             paddingBottom: 15,

@@ -8,6 +8,7 @@ import {
   View,
   Keyboard,
   KeyboardAvoidingView,
+  ImageBackground,
 } from "react-native";
 import {
   collection,
@@ -20,6 +21,8 @@ import {
 } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 
+import join from "../../assets/join.png";
+
 import DataContext from "../../../DataContext";
 import { colors } from "../../assets/colors";
 import { strings } from "../../assets/languages";
@@ -29,10 +32,9 @@ const JoinGameScreen = ({ navigation }) => {
   const { language, username } = useContext(DataContext);
   const [roomCode, setRoomCode] = useState(["", "", "", ""]);
   const [roomFound, setRoomFound] = useState(undefined);
+  const [containerPaddingTop, setContainerPaddingTop] = useState(0);
 
   const handleChange = async (value, index) => {
-    const filteredValue = value.replace(/[^0-9]/g, "");
-
     const newCode = [...roomCode];
     newCode[index] = value;
     setRoomCode(newCode);
@@ -71,87 +73,105 @@ const JoinGameScreen = ({ navigation }) => {
   const inputs = [];
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        {roomFound !== undefined && (
-          <View style={styles.box}>
-            <Text style={styles.headerText}>{strings[language].category}</Text>
-            <Text style={styles.boxContent}>{roomFound.title}</Text>
-            <Text style={styles.headerText}>{strings[language].createdBy}</Text>
-            <Text style={styles.boxContent}>{roomFound.p1_name}</Text>
-          </View>
-        )}
-        <View style={styles.box}>
-          <Text style={styles.headerText}>{strings[language].codeInfo}</Text>
-          {roomFound === undefined && (
-            <Text
-              style={[
-                styles.boxContent,
-                { fontSize: 20, marginBottom: 10, marginTop: 70 },
-              ]}
-            >
-              {strings[language].joinInfo}
-            </Text>
+    <ImageBackground
+      source={join}
+      resizeMode="cover"
+      style={{
+        flex: 1,
+        height: "100%",
+        width: "100%",
+        backgroundColor: colors.primary,
+      }}
+    >
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={styles.container}>
+          {roomFound !== undefined && (
+            <View style={styles.box}>
+              <Text style={styles.headerText}>
+                {strings[language].category}
+              </Text>
+              <Text style={styles.boxContent}>{roomFound.title}</Text>
+              <Text style={styles.headerText}>
+                {strings[language].createdBy}
+              </Text>
+              <Text style={styles.boxContent}>{roomFound.p1_name}</Text>
+            </View>
           )}
-        </View>
-
-        <View style={styles.inputZone}>
-          {(() => {
-            const digitZones = [];
-            for (let index = 0; index < digitCount; index++) {
-              digitZones.push(
-                <TextInput
-                  key={index}
-                  style={styles.roomCodeInput}
-                  onChangeText={(value) => {
-                    handleChange(value, index);
-                    value !== "" && focusNextInput(index);
-                  }}
-                  value={roomCode[index]}
-                  keyboardType="numeric"
-                  maxLength={1}
-                  ref={(input) => {
-                    inputs[index] = input;
-                  }}
-                  onKeyPress={({ nativeEvent }) => {
-                    if (nativeEvent.key === "Backspace") {
-                      if (roomCode[index] === "") {
-                        focusPrevInput(index);
-                      }
-                    }
-                  }}
-                />
-              );
-            }
-
-            return digitZones;
-          })()}
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            if (roomFound)
-              joinRoom({
-                roomCode: parseInt(roomCode.join("")),
-                username: username,
-                navigation: navigation,
-              });
-          }}
-          activeOpacity={0.8}
-        >
-          <View style={styles.joinButton}>
-            <Text
-              style={{
-                fontFamily: "CentraBook",
-                fontSize: 22,
-                color: colors.black,
-              }}
-            >
-              {strings[language].join}
-            </Text>
+          <View style={styles.box}>
+            <Text style={styles.headerText}>{strings[language].codeInfo}</Text>
+            {roomFound === undefined && (
+              <Text
+                style={[
+                  styles.boxContent,
+                  { fontSize: 20, marginBottom: 10, marginTop: 70 },
+                ]}
+              >
+                {strings[language].joinInfo}
+              </Text>
+            )}
           </View>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+
+          <View style={styles.inputZone}>
+            {(() => {
+              const digitZones = [];
+              for (let index = 0; index < digitCount; index++) {
+                digitZones.push(
+                  <TextInput
+                    key={index}
+                    style={styles.roomCodeInput}
+                    onChangeText={(value) => {
+                      const temp = value.replace(/[^0-9]/g, "");
+                      if (value === temp) {
+                        handleChange(value, index);
+                        value !== "" && focusNextInput(index);
+                      }
+                    }}
+                    value={roomCode[index]}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    ref={(input) => {
+                      inputs[index] = input;
+                    }}
+                    onKeyPress={({ nativeEvent }) => {
+                      if (nativeEvent.key === "Backspace") {
+                        if (roomCode[index] === "") {
+                          focusPrevInput(index);
+                        }
+                      }
+                    }}
+                  />
+                );
+              }
+
+              return digitZones;
+            })()}
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              if (roomFound)
+                joinRoom({
+                  roomCode: parseInt(roomCode.join("")),
+                  username: username,
+                  navigation: navigation,
+                });
+            }}
+            activeOpacity={0.8}
+          >
+            <View style={styles.joinButton}>
+              <Text
+                style={{
+                  fontFamily: "CentraBook",
+                  fontSize: 22,
+                  color: colors.black,
+                }}
+              >
+                {strings[language].join}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </TouchableWithoutFeedback>
+    </ImageBackground>
   );
 };
 
@@ -159,11 +179,10 @@ export default JoinGameScreen;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 31,
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: colors.primary,
+    paddingBottom: 30,
   },
   headerText: {
     fontSize: 32,
