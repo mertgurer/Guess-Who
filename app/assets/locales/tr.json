@@ -83,7 +83,7 @@
   "guessInfo": "Tahminde bulunmak soru sormadan turu bitirir",
   "correctGuess": "Kazandın!",
   "correctGuessInfo": "Tebrikler, doğru bildin!",
-  "wrongGuess": "Opps.. Bilemedin",
+  "wrongGuess": "Oops.. Bilemedin",
   "lost": "Kaybettin!",
   "lostInfo": "Rakibin doğru tahmin etti. Kartı: "
 }

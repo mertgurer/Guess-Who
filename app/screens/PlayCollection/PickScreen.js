@@ -16,8 +16,10 @@ import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import randomLock from "../../assets/randomLock.png";
-import lock from "../../assets/lock.png";
+import randomLockOpen from "../../assets/randomLockOpen.png";
+import lockOpen from "../../assets/lockOpen.png";
+import randomLockClose from "../../assets/randomLockClose.png";
+import lockClose from "../../assets/lockClose.png";
 
 import { strings } from "../../assets/languages";
 import DataContext from "../../../DataContext";
@@ -262,7 +264,17 @@ const PickScreen = ({ route, navigation }) => {
                   });
                 }}
               >
-                <Image source={randomLock} style={{ width: 25, height: 35 }} />
+                {playerPick === -1 ? (
+                  <Image
+                    source={randomLockOpen}
+                    style={{ width: 25, height: 35 }}
+                  />
+                ) : (
+                  <Image
+                    source={randomLockClose}
+                    style={{ width: 25, height: 35 }}
+                  />
+                )}
               </TouchableOpacity>
               <Text style={styles.buttonText}>{strings[language].random}</Text>
             </View>
@@ -283,7 +295,11 @@ const PickScreen = ({ route, navigation }) => {
                   })
                 }
               >
-                <Image source={lock} style={{ width: 25, height: 35 }} />
+                {playerPick === -1 ? (
+                  <Image source={lockOpen} style={{ width: 25, height: 35 }} />
+                ) : (
+                  <Image source={lockClose} style={{ width: 25, height: 35 }} />
+                )}
               </TouchableOpacity>
               <Text style={styles.buttonText}>{strings[language].lockIn}</Text>
             </View>

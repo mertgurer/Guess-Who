@@ -21,8 +21,6 @@ const imageMap = {
   tr: require("../assets/locales/tr.png"),
   es: require("../assets/locales/es.png"),
   it: require("../assets/locales/it.png"),
-  fr: require("../assets/locales/fr.png"),
-  de: require("../assets/locales/de.png"),
 };
 
 const SettingsScreen = () => {

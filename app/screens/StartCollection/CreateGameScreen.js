@@ -10,6 +10,7 @@ import {
   Image,
   SafeAreaView,
   ImageBackground,
+  RefreshControl,
 } from "react-native";
 import {
   addDoc,
@@ -100,6 +101,7 @@ const CreateGameScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [roomCode, setRoomCode] = useState();
   const [urls, setUrls] = useState();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchCategoriesData = async () => {
     const temp = await getCategoriesData();
@@ -110,6 +112,21 @@ const CreateGameScreen = ({ navigation }) => {
     } else {
       setCategoryData(temp);
     }
+  };
+
+  const refreshFetchCategoriesData = async () => {
+    setIsRefreshing(true);
+
+    const temp = await getCategoriesData();
+    fetchImage({ data: temp });
+
+    if (customCardsArray) {
+      setCategoryData([...temp, ...customCardsArray]);
+    } else {
+      setCategoryData(temp);
+    }
+
+    setIsRefreshing(false);
   };
 
   const fetchImage = async ({ data }) => {
@@ -172,6 +189,12 @@ const CreateGameScreen = ({ navigation }) => {
             gap: 10,
           }}
           keyExtractor={(item) => item.id.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={() => refreshFetchCategoriesData()}
+            />
+          }
         />
       ) : (
         <View style={{ flex: 1, justifyContent: "center" }}>

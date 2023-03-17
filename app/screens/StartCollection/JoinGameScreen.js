@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     color: colors.halfWhite,
     marginTop: 2,
     marginBottom: 30,
+    textAlign: "center",
   },
   inputZone: {
     flexDirection: "row",
