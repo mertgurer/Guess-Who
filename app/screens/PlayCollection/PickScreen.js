@@ -200,7 +200,7 @@ const PickScreen = ({ route, navigation }) => {
                 random={random}
               />
             )}
-            numColumns={2}
+            numColumns={3}
             columnWrapperStyle={{ justifyContent: "space-evenly" }}
             contentContainerStyle={{ paddingBottom: 100, paddingTop: 5 }}
             keyExtractor={(index) => index.toString()}
@@ -355,15 +355,21 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardBox: {
+    marginVertical: 3,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardBoxImage: {
     backgroundColor: colors.fourth,
-    width: 190,
+    width: 130,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
-    borderWidth: 4,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderWidth: 3,
+    borderBottomWidth: 0,
     borderColor: colors.black,
-    marginVertical: 10,
     padding: 5,
 
     shadowColor: colors.black,
@@ -372,16 +378,20 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
   },
   activeCard: {
-    borderColor: colors.fourth,
+    borderColor: "#0e0",
   },
   pickedCard: {
-    borderColor: "red",
+    borderColor: "#f00",
   },
   cardBoxContent: {
-    color: colors.black,
-    textAlign: "center",
-    fontFamily: "CentraBook",
-    position: "absolute",
+    width: 130,
+    backgroundColor: colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderWidth: 3,
+    borderTopWidth: 1,
   },
   buttonArea: {
     backgroundColor: colors.primary,
@@ -431,34 +441,64 @@ const Item = ({
     }}
     activeOpacity={0.8}
   >
-    <View
-      style={[
-        styles.cardBox,
-        pick === index && styles.activeCard,
-        playerPick === index && !random && styles.pickedCard,
-      ]}
-    >
-      <Image
-        source={{ uri: url }}
-        style={{ width: 182, height: 182, borderRadius: 6 }}
-      />
-      <Text
+    {originals ? (
+      <View style={styles.cardBox}>
+        <View
+          style={[
+            styles.cardBoxImage,
+            pick === index && styles.activeCard,
+            playerPick === index && !random && styles.pickedCard,
+          ]}
+        >
+          <Image
+            source={{ uri: url }}
+            style={{
+              width: 124,
+              height: 127,
+              borderTopLeftRadius: 7,
+              borderTopRightRadius: 7,
+            }}
+          />
+        </View>
+        <View
+          style={[
+            styles.cardBoxContent,
+            pick === index && styles.activeCard,
+            playerPick === index && !random && styles.pickedCard,
+          ]}
+        >
+          <Text
+            style={{
+              fontFamily: "CentraBook",
+              fontSize: 12,
+              textAlign: "center",
+            }}
+          >
+            {card}
+          </Text>
+        </View>
+      </View>
+    ) : (
+      <View
         style={[
-          styles.cardBoxContent,
-          originals
-            ? {
-                bottom: 5,
-                color: colors.white,
-                backgroundColor: "#000000b0",
-                width: 190,
-                fontSize: 15,
-              }
-            : { fontSize: 20 },
+          styles.cardBoxImage,
+          { marginVertical: 3, borderBottomWidth: 3, borderRadius: 7 },
+          pick === index && styles.activeCard,
+          playerPick === index && !random && styles.pickedCard,
         ]}
       >
-        {card}
-      </Text>
-    </View>
+        <Text
+          style={{
+            position: "absolute",
+            fontFamily: "CentraBook",
+            fontSize: 17,
+            textAlign: "center",
+          }}
+        >
+          {card}
+        </Text>
+      </View>
+    )}
   </TouchableOpacity>
 );
 

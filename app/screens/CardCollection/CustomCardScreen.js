@@ -54,33 +54,49 @@ const CustomCardScreen = ({ route, navigation }) => {
     // validate new card set
     if (filteredTitle.length !== 0 && filteredCards.length >= 2) {
       if (customCardsArray) {
+        // not create edit
         if (passedTitle !== "") {
-          const object = customCardsArray.find(
-            (item) => item.title === passedTitle
-          );
+          let uniqueFlag = true;
+          for (let i = 0; i < customCardsArray.length; i++) {
+            if (filteredTitle === customCardsArray[i].title) {
+              uniqueFlag = false;
+              break;
+            }
+          }
 
-          const editedCards = {
-            ...object,
-            title: filteredTitle,
-            cards: filteredCards,
-          };
+          if (uniqueFlag || passedTitle === filteredTitle) {
+            const object = customCardsArray.find(
+              (item) => item.title === passedTitle
+            );
 
-          const updatedArray = customCardsArray.map((item) => {
-            return item.title === passedTitle ? editedCards : item;
-          });
+            const editedCards = {
+              ...object,
+              title: filteredTitle,
+              cards: filteredCards,
+            };
 
-          setCustomCardsArray(updatedArray);
-          saveCardState({
-            customCardsArray: updatedArray,
-          });
+            const updatedArray = customCardsArray.map((item) => {
+              return item.title === passedTitle ? editedCards : item;
+            });
 
-          navigation.goBack();
+            setCustomCardsArray(updatedArray);
+            saveCardState({
+              customCardsArray: updatedArray,
+            });
 
-          navigation.navigate("Cards", {
-            title: editedCards.title,
-            cards: editedCards.cards,
-            id: editedCards.id,
-          });
+            navigation.goBack();
+
+            navigation.navigate("Cards", {
+              title: editedCards.title,
+              cards: editedCards.cards,
+              id: editedCards.id,
+            });
+          } else {
+            failAlert({
+              header: strings[language].saveFail,
+              message: `${strings[language].saveFailInfo1} "${filteredTitle}" ${strings[language].saveFailInfo2}`,
+            });
+          }
         } else {
           let uniqueFlag = true;
 

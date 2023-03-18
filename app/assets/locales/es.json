@@ -3,7 +3,7 @@
   "howToPlayInfo": "Usa juegos de cartas populares o crea tus propios juegos que incluyan a tus amigos para jugar Adivina quién \n\n1) Elige una carta del juego \n2) Haz preguntas y cierra las cartas \n3) Adivina cuando estés listo \n4) Primero en adivina que gana la otra carta \n\n*No se puede hacer la misma pregunta dos veces \n*Solo preguntas de 'Sí' o 'No'",
 
   "home": "Hogar",
-  "play": "jugar",
+  "play": "Jugar",
   "settings": "Ajustes",
   "categories": "Categorías",
   "customCardSet": "Juego de cartas personalizado",
@@ -80,7 +80,8 @@
   "exit": "¿Estás seguro de que quieres salir?",
   "endTurn": "Fin del turno",
   "guess": "Hacer una conjetura",
-  "guessInfo": "Hacer una conjetura finaliza el turno sin hacer una pregunta.",
+  "guessInfo": "Hacer una conjetura finaliza el turno sin hacer una pregunta",
+  "openCards": "Tarjetas abiertas",
   "correctGuess": "¡Tú ganas!",
   "correctGuessInfo": "¡Felicidades, acertaste!",
   "wrongGuess": "Oops.. Conjetura incorrecta",

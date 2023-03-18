@@ -183,7 +183,7 @@ const GameScreen = ({ route, navigation }) => {
               urls: urls,
             })}
             renderItem={({ item }) => item}
-            numColumns={2}
+            numColumns={3}
             columnWrapperStyle={{ justifyContent: "space-evenly" }}
             contentContainerStyle={{ paddingBottom: 90, paddingTop: 5 }}
             keyExtractor={(item, index) => index.toString()}
@@ -256,7 +256,7 @@ const GameScreen = ({ route, navigation }) => {
               ]);
             }}
           >
-            <Ionicons name="close" size={32} color={colors.black} />
+            <Ionicons name="close" size={25} color={colors.black} />
           </TouchableOpacity>
           <Modal
             visible={modalGuessVisible}
@@ -269,9 +269,15 @@ const GameScreen = ({ route, navigation }) => {
             <View style={styles.modalFrame}>
               <View style={styles.modalGuess}>
                 <Text style={styles.guessInfo}>
-                  {strings[language].guessInfo}
+                  {`${strings[language].guessInfo}\n\n${
+                    strings[language].openCards
+                  }: ${markedCards.reduce((count, value) => {
+                    return value ? count : count + 1;
+                  }, 0)}`}
                 </Text>
-                <ScrollView contentContainerStyle={{ gap: 10 }}>
+                <ScrollView
+                  contentContainerStyle={{ gap: 10, paddingBottom: 10 }}
+                >
                   {(() => {
                     const elements = [];
                     for (let index = 0; index < docData.cards.length; index++) {
@@ -457,15 +463,21 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardBox: {
+    marginVertical: 3,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardBoxImage: {
     backgroundColor: colors.fourth,
-    width: 190,
+    width: 130,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     borderWidth: 3,
+    borderBottomWidth: 0,
     borderColor: colors.black,
-    marginVertical: 10,
     padding: 5,
 
     shadowColor: colors.black,
@@ -474,10 +486,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
   },
   cardBoxContent: {
-    color: colors.black,
-    textAlign: "center",
-    fontFamily: "CentraBook",
-    position: "absolute",
+    width: 130,
+    backgroundColor: colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderWidth: 3,
+    borderTopWidth: 1,
   },
   marked: {
     opacity: 0.3,
@@ -505,10 +521,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: "CentraMedium",
     color: colors.white,
+    textAlign: "center",
   },
   exitButton: {
     backgroundColor: colors.third,
-    width: 36,
+    width: 30,
     aspectRatio: 1,
     position: "absolute",
     top: 10,
@@ -532,7 +549,7 @@ const styles = StyleSheet.create({
   guessInfo: {
     textAlign: "center",
     paddingHorizontal: 50,
-    marginBottom: 20,
+    marginBottom: 15,
     fontFamily: "CentraBook",
   },
   guessBox: {
@@ -611,31 +628,51 @@ const Item = ({ card, index, markedCards, setMarkedCards, url, originals }) => (
     }}
     activeOpacity={0.8}
   >
-    <View style={[styles.cardBox, markedCards[index] && styles.marked]}>
-      {originals && (
-        <Image
-          source={{ uri: url }}
-          style={{ width: 184, height: 184, borderRadius: 6 }}
-        />
-      )}
-
-      <Text
+    {originals ? (
+      <View style={[styles.cardBox, markedCards[index] && styles.marked]}>
+        <View style={styles.cardBoxImage}>
+          <Image
+            source={{ uri: url }}
+            style={{
+              width: 124,
+              height: 127,
+              borderTopLeftRadius: 7,
+              borderTopRightRadius: 7,
+            }}
+          />
+        </View>
+        <View style={styles.cardBoxContent}>
+          <Text
+            style={{
+              fontFamily: "CentraBook",
+              fontSize: 12,
+              textAlign: "center",
+            }}
+          >
+            {card}
+          </Text>
+        </View>
+      </View>
+    ) : (
+      <View
         style={[
-          styles.cardBoxContent,
-          originals
-            ? {
-                bottom: 5,
-                color: colors.white,
-                backgroundColor: "#000000b0",
-                width: 190,
-                fontSize: 15,
-              }
-            : { fontSize: 20 },
+          styles.cardBoxImage,
+          markedCards[index] && styles.marked,
+          { marginVertical: 3, borderBottomWidth: 3, borderRadius: 7 },
         ]}
       >
-        {card}
-      </Text>
-    </View>
+        <Text
+          style={{
+            position: "absolute",
+            fontFamily: "CentraBook",
+            fontSize: 17,
+            textAlign: "center",
+          }}
+        >
+          {card}
+        </Text>
+      </View>
+    )}
   </TouchableOpacity>
 );
 

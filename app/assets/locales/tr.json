@@ -81,6 +81,7 @@
   "endTurn": "Turu Bitir",
   "guess": "Tahmin Et",
   "guessInfo": "Tahminde bulunmak soru sormadan turu bitirir",
+  "openCards": "Açık kartlar",
   "correctGuess": "Kazandın!",
   "correctGuessInfo": "Tebrikler, doğru bildin!",
   "wrongGuess": "Oops.. Bilemedin",

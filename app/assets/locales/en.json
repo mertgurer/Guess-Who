@@ -81,6 +81,7 @@
   "endTurn": "End Turn",
   "guess": "Make a Guess",
   "guessInfo": "Making a guess ends the turn without asking a question",
+  "openCards": "Open cards",
   "correctGuess": "You Win!",
   "correctGuessInfo": "Congrats, you guessed right!",
   "wrongGuess": "Oops.. Wrong Guess",

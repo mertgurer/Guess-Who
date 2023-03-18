@@ -20,25 +20,45 @@ import { getDownloadURL, listAll, ref } from "firebase/storage";
 import { storage } from "../../../firebase";
 
 const Item = ({ card, url, originals }) => {
-  return (
+  return originals ? (
     <View style={styles.cardBox}>
-      <Image
-        source={{ uri: url }}
-        style={{ width: 184, height: 184, borderRadius: 6 }}
-      />
+      <View style={styles.cardBoxImage}>
+        <Image
+          source={{ uri: url }}
+          style={{
+            width: 124,
+            height: 127,
+            borderTopLeftRadius: 7,
+            borderTopRightRadius: 7,
+          }}
+        />
+      </View>
+      <View style={styles.cardBoxContent}>
+        <Text
+          style={{
+            fontFamily: "CentraBook",
+            fontSize: 12,
+            textAlign: "center",
+          }}
+        >
+          {card}
+        </Text>
+      </View>
+    </View>
+  ) : (
+    <View
+      style={[
+        styles.cardBoxImage,
+        { marginVertical: 3, borderBottomWidth: 3, borderRadius: 7 },
+      ]}
+    >
       <Text
-        style={[
-          styles.cardBoxContent,
-          originals
-            ? {
-                bottom: 5,
-                color: colors.white,
-                backgroundColor: "#000000b0",
-                width: 190,
-                fontSize: 15,
-              }
-            : { fontSize: 20 },
-        ]}
+        style={{
+          position: "absolute",
+          fontFamily: "CentraBook",
+          fontSize: 17,
+          textAlign: "center",
+        }}
       >
         {card}
       </Text>
@@ -121,7 +141,7 @@ const CardScreen = ({ route, navigation }) => {
       renderItem={({ item }) => (
         <Item card={item} url={urls[item]} originals={true} />
       )}
-      numColumns={2}
+      numColumns={3}
       columnWrapperStyle={{ justifyContent: "space-evenly" }}
       contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}
       keyExtractor={(item, index) => index.toString()}
@@ -131,7 +151,7 @@ const CardScreen = ({ route, navigation }) => {
       style={styles.cards}
       data={cards}
       renderItem={({ item }) => <Item card={item} originals={false} />}
-      numColumns={2}
+      numColumns={3}
       columnWrapperStyle={{ justifyContent: "space-evenly" }}
       contentContainerStyle={{ paddingBottom: 30, paddingTop: 10 }}
       keyExtractor={(item, index) => index.toString()}
@@ -145,15 +165,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.third,
   },
   cardBox: {
+    marginVertical: 3,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardBoxImage: {
     backgroundColor: colors.fourth,
-    width: 190,
+    width: 130,
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     borderWidth: 3,
+    borderBottomWidth: 0,
     borderColor: colors.black,
-    marginVertical: 10,
     padding: 5,
 
     shadowColor: colors.black,
@@ -162,10 +188,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
   },
   cardBoxContent: {
-    color: colors.black,
-    textAlign: "center",
-    fontFamily: "CentraBook",
-    position: "absolute",
+    width: 130,
+    backgroundColor: colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderWidth: 3,
+    borderTopWidth: 1,
   },
   headerRight: {
     flexDirection: "row",
