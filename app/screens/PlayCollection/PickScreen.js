@@ -385,13 +385,13 @@ const styles = StyleSheet.create({
   },
   cardBoxContent: {
     width: 130,
-    backgroundColor: colors.secondary,
+    backgroundColor: "#50808e4d",
     justifyContent: "center",
     alignItems: "center",
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
     borderWidth: 3,
-    borderTopWidth: 1,
+    borderTopWidth: 0,
   },
   buttonArea: {
     backgroundColor: colors.primary,
