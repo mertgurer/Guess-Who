@@ -20,18 +20,19 @@ import React, {
   useState,
 } from "react";
 import { deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 import { colors } from "../../assets/colors";
 import { strings } from "../../assets/languages";
 import DataContext from "../../../DataContext";
-import { storage } from "../../../firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GameScreen = ({ route, navigation }) => {
-  const { language, username } = useContext(DataContext);
-  const { title, docRef, p1orp2, pick, cardSize } = route.params;
+  const { language, username, totalWins, setTotalWins } =
+    useContext(DataContext);
+  const { docRef, p1orp2, pick, cardSize, urls } = route.params;
   const [docData, setDocData] = useState();
   const [turn, setTurn] = useState();
   const [turnCount, setTurnCount] = useState(-1);
@@ -41,34 +42,16 @@ const GameScreen = ({ route, navigation }) => {
   const [markedCards, setMarkedCards] = useState(
     new Array(cardSize).fill(false)
   );
-  const [id, setId] = useState(100);
-  const [urls, setUrls] = useState();
   const [modalGuessVisible, setModalGuessVisible] = useState(false);
   const [guessIndex, setGuessIndex] = useState(-1);
   const [gameOver, setGameOver] = useState(false);
   const [cardVisibility, setCardVisibility] = useState(false);
-
-  const fetchImage = async () => {
-    const storageRef = ref(storage, title);
-    const allImages = await listAll(storageRef);
-
-    const imageObjects = await Promise.all(
-      allImages.items.map(async (imageRef) => {
-        const object = await getDownloadURL(imageRef);
-        return { [imageRef.name.split(".")[0]]: object };
-      })
-    );
-
-    setUrls(Object.assign({}, ...imageObjects));
-  };
 
   useEffect(() => {
     const unsubscribe = onSnapshot(docRef, (doc) => {
       if (gameOver) return;
 
       setDocData(doc.data());
-
-      setId(doc.data().id);
 
       // check for turn change
       if (prevTurnCountRef.current === -1 && doc.data().turn === p1orp2) {
@@ -126,9 +109,6 @@ const GameScreen = ({ route, navigation }) => {
         setModalInfoVisible(true);
       }
     });
-
-    fetchImage();
-
     return () => {
       unsubscribe();
     };
@@ -172,7 +152,7 @@ const GameScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {docData && urls ? (
+      {docData ? (
         <View style={styles.container}>
           <FlatList
             style={styles.cards}
@@ -332,6 +312,8 @@ const GameScreen = ({ route, navigation }) => {
                       setGameOver: setGameOver,
                       markedCards: markedCards,
                       setMarkedCards: setMarkedCards,
+                      totalWins: totalWins,
+                      setTotalWins: setTotalWins,
                     });
                   }}
                   activeOpacity={0.8}
@@ -388,6 +370,19 @@ const GameScreen = ({ route, navigation }) => {
                   </Text>
                 )}
               </Text>
+            )}
+            {gameOver && docData.turn === p1orp2 && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 7,
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <Text style={{ fontFamily: "CentraBook" }}>+1</Text>
+                <FontAwesome5 name="trophy" size={17} />
+              </View>
             )}
           </View>
         </View>
@@ -690,6 +685,8 @@ const makeGuess = async ({
   setGameOver,
   markedCards,
   setMarkedCards,
+  totalWins,
+  setTotalWins,
 }) => {
   if (cards[pick] === oponentPick) {
     setGameOver(true);
@@ -700,6 +697,9 @@ const makeGuess = async ({
     } else {
       await updateDoc(docRef, { roomCode: 2 });
     }
+
+    setTotalWins(totalWins + 1);
+    await AsyncStorage.setItem("totalWin", (totalWins + 1).toString());
 
     setModalTitle(strings[language].correctGuess);
     setModalText(strings[language].correctGuessInfo);

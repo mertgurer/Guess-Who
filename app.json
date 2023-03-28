@@ -5,7 +5,7 @@
     "owner": "guess-who",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "",
+    "icon": "./app/assets/gameIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./app/assets/splash.png",

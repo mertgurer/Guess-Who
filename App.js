@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StatusBar, TouchableOpacity } from "react-native";
+import { StatusBar, Text, TouchableOpacity, View } from "react-native";
 import * as Localization from "expo-localization";
 import { useFonts } from "expo-font";
 import { LogBox } from "react-native";
@@ -12,6 +12,7 @@ LogBox.ignoreLogs([
 ]);
 
 import Feather from "react-native-vector-icons/Feather";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 import { colors } from "./app/assets/colors";
 import { DataContext } from "./DataContext";
@@ -35,12 +36,14 @@ export default function App() {
   const [username, setUsername] = useState();
   const [customCardsArray, setCustomCardsArray] = useState();
   const [categoryData, setCategoryData] = useState();
+  const [totalWins, setTotalWins] = useState();
 
   const retriveUserRelatedData = async () => {
     try {
       const usernameValue = await AsyncStorage.getItem("username");
       const customCardsValue = await AsyncStorage.getItem("customCards");
       const languageValue = await AsyncStorage.getItem("language");
+      const totalWinCount = await AsyncStorage.getItem("totalWin");
 
       // get user name data
       if (usernameValue !== null) {
@@ -77,6 +80,14 @@ export default function App() {
           await AsyncStorage.setItem("language", "en");
         }
       }
+
+      // get total wins
+      if (totalWinCount !== null) {
+        setTotalWins(parseInt(totalWinCount));
+      } else {
+        setTotalWins(0);
+        await AsyncStorage.setItem("totalWin", "0");
+      }
     } catch (e) {
       console.log(e);
     }
@@ -102,6 +113,8 @@ export default function App() {
           setCustomCardsArray,
           language,
           setLanguage,
+          totalWins,
+          setTotalWins,
         }}
       >
         <StatusBar barStyle={"dark-content"} />
@@ -139,6 +152,22 @@ export default function App() {
                     navigation: navigation,
                     front: colors.black,
                   }),
+                headerRight: () => {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 7,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ fontFamily: "CentraBook" }}>
+                        {totalWins}
+                      </Text>
+                      <FontAwesome5 name="trophy" size={17} />
+                    </View>
+                  );
+                },
               })}
             />
             <Stack.Screen

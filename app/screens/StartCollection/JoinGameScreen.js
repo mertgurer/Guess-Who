@@ -32,7 +32,6 @@ const JoinGameScreen = ({ navigation }) => {
   const { language, username } = useContext(DataContext);
   const [roomCode, setRoomCode] = useState(["", "", "", ""]);
   const [roomFound, setRoomFound] = useState(undefined);
-  const [containerPaddingTop, setContainerPaddingTop] = useState(0);
 
   const handleChange = async (value, index) => {
     const newCode = [...roomCode];

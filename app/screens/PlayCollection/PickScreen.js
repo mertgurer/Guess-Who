@@ -118,7 +118,7 @@ const PickScreen = ({ route, navigation }) => {
           p1orp2: p1orp2,
           pick: doc.data().cards[playerPick],
           cardSize: doc.data().cards.length,
-          title: title,
+          urls: urls,
         });
       }
     });
@@ -320,6 +320,7 @@ const PickScreen = ({ route, navigation }) => {
                       title: title,
                       language: language,
                       navigation: navigation,
+                      urls: urls,
                     })
                   }
                 >
@@ -571,6 +572,7 @@ const handleStartGame = async ({
   title,
   language,
   navigation,
+  urls,
 }) => {
   if (playerPick === -1) {
     Alert.alert(strings[language].noCard, strings[language].noCardLockInfo, [
@@ -601,7 +603,7 @@ const handleStartGame = async ({
       p1orp2: p1orp2,
       pick: docData.cards[playerPick],
       cardSize: docData.cards.length,
-      title: title,
+      urls: urls,
     });
   }
 };
